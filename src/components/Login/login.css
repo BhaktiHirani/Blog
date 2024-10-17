@@ -1,0 +1,125 @@
+/* Full-screen background */
+.login-page {
+    background: url('https://plus.unsplash.com/premium_photo-1684581214880-2043e5bc8b8b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmxvZyUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D') no-repeat center center fixed; /* Background image */
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Container for the login form */
+  .login-container {
+    background-color: rgba(255, 255, 255, 0.9); /* White background with slight transparency */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+  }
+  
+  /* Login form */
+  .login-form {
+    padding: 20px;
+  }
+  
+  .login-form h2 {
+    color: #333;
+  }
+  
+  
+  .input-group-text {
+    background-color: #0c7683;
+    color: white;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .btn-primary {
+    background-color: #0c7683;
+    border: none;
+  }
+  .btn-primary {
+    background-color: #0c7683;
+    border: none;
+    width: 100%; /* Make the button full width */
+}
+
+.btn-primary:hover {
+    background-color: #0c7683;
+}
+  .btn-primary:hover {
+    background-color: #0c7683;
+  }
+  
+  .forgot-password-link {
+    color: #0c7683;
+    text-decoration: none;
+  }
+  
+  .forgot-password-link:hover {
+    text-decoration: underline;
+  }
+  
+  .signup-link {
+    color: #0c7683;
+    text-decoration: none;
+  }
+  
+  .signup-link:hover {
+    text-decoration: underline;
+  }
+  
+  .form-check-label {
+    margin-left: 5px;
+  }
+  
+  /* Illustration column styling */
+  .illustration img {
+    max-width: 100%;  /* Ensure the image scales properly */
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .login-container {
+      padding: 20px;
+    }
+  
+    .login-form {
+      margin-top: 20px;
+    }
+  }
+  .input-group {
+    display: flex; /* Display input group in a row */
+    align-items: center; /* Center items vertically */
+  }
+  
+  .input-group-prepend {
+    margin-right: 12px; /* Space between icon and text field */
+  }
+  
+  .input-group-text {
+    background-color: transparent; /* Remove background color */
+    border: 1px solid #ccc; /* Add border if needed */
+    padding: 0; /* Remove padding */
+    display: flex;
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    height: 2.5rem; /* Adjust height as needed */
+    width: 2.5rem; /* Adjust width as needed */
+  }
+  
+  .input-group-text i {
+    font-size: 1.5rem; /* Increase icon size */
+  }
+  
+  .form-control {
+    height: 2.5rem; /* Match the height of the input field to the icon */
+    padding: 0 10px; /* Adjust padding for input text */
+    border: 1px solid #ccc; /* Add border if needed */
+    border-radius: 0.25rem; /* Match border-radius to input group text */
+  }
+  
+  
+
