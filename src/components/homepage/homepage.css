@@ -1,116 +1,167 @@
-/* HomePage.css */
+.custom-navbar {
+  background-color: #008080; /* Teal color */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  padding: 0 20px; /* Horizontal padding for navbar */
+  height: 60px; /* Fixed height for the navbar */
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Vertically center items in the navbar */
+
+}
+
 .navbar {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Ensuring full width for the navbar */
+  width: 100%;
 }
 
 .navbar-dark .navbar-nav .nav-link {
-  color: #fff;
+  color: white; /* White text for links */
 }
 
 .navbar-dark .navbar-nav .nav-link:hover {
-  color: black;
+  color: white; /* Change color on hover */
 }
 
-.navbar-brand {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
+
+.logo-container {
+  display: flex;
+  align-items: center; /* Center align logo vertically */
+  margin-right: auto; /* Align logo to the left */
+  height: 100%; /* Ensure it fills the navbar height */
+  padding: 5px 15px; /* Padding inside logo container */
+  border-radius: 5px; /* Rounded corners */
 }
 
-.navbar-icons .form-inline {
-  width: 250px; /* Search bar width */
+.logo-icon {
+  width: 40px; /* Set a fixed width for logo icon */
+  height: 40px; /* Set a fixed height for logo icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px; /* Space between icon and text */
+  
 }
 
-.navbar-icons .form-control {
-  border-radius: 0;
-}
-
-.navbar-icons .input-group-text {
-  background-color: #343a40;
-  border: none;
-}
-
-.navbar-icons .nav-link {
-  color: white;
-}
-
-.navbar-icons .nav-link:hover {
-  color: black;
-}
-.custom-navbar {
-  background-color: #008080; /* Teal color */
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.navbar {
-  width: 100%;
-}
-/* homepage.css */
-
-/* Blog Logo Styling */
-.blog-logo {
-  font-family: 'Pacifico', cursive; /* Add a custom font from Google Fonts */
-  font-size: 2rem;
+.logo-text {
+  font-family: 'Pacifico', cursive; /* Use your chosen font */
+  font-size: 2.5rem; /* Font size */
   font-weight: bold;
-  color: white; /* Teal color to match the theme */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add some shadow for depth */
+  background: linear-gradient(90deg, white,#05998c); /* Gradient colors */
+  -webkit-background-clip: text; /* For WebKit browsers */
+  -webkit-text-fill-color: transparent; /* For WebKit browsers */
+  margin-left: 10px; /* Optional: space between icon and text */
+  margin-top: -40px;
 }
 
-/* Custom Navbar */
-.custom-navbar {
-  background-color: #008080; /* Teal color */
-  padding-left: 0;
-  padding-right: 0;
+
+.custom-search-input {
+  max-width: 500px; /* Increase the max width of the search bar */
+  margin: 0 auto; /* Center the search bar in the navbar */
 }
 
-.navbar {
-  width: 100%;
+.input-group {
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center items vertically */
 }
-/* homepage.css */
 
-/* Reduce card height */
+.input-group .form-control {
+  border-radius: 20px 0 0 20px; /* Rounded left corners */
+  border: 1px solid #ccc; /* Light border for the input */
+  height: 40px; /* Set a height for the input */
+  padding-left: 15px; /* Add some padding for text */
+  transition: border-color 0.3s; /* Smooth border color transition */
+}
+
+.input-group .form-control:focus {
+  border-color: #008080; /* Teal color on focus */
+  box-shadow: 0 0 5px rgba(0, 128, 128, 0.5); /* Subtle shadow on focus */
+}
+
+.input-group .btn {
+  border-radius: 0 20px 20px 0; /* Rounded right corners */
+  background-color: #008080; /* Teal background */
+  color: white; /* White text color */
+  height: 40px; /* Match the height of the input */
+  border: 1px solid #ccc; /* Light border for the button */
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.input-group .btn:hover {
+  background-color: #006666; /* Darker teal on hover */
+}
+
+
+
+.navbar-nav {
+  margin-left: auto; /* Align links to the right */
+}
+
+
+@media (max-width: 768px) {
+  .custom-search-input {
+      width: 100%; /* Full width on smaller screens */
+  }
+}
+
+
 .card {
   width: 100%;
-  height: 100%;
-  max-width: 18rem;
-  min-height: 250px; /* Reduced the minimum height */
+  max-width: 22rem; /* Increased max-width for wider cards */
+  min-height: 250px; 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 0; /* Remove extra margins between cards */
+  margin: 0; 
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .card img {
-  height: 120px; /* Reduced image height */
-  object-fit: cover; /* Ensure the image still covers the area uniformly */
+  width: 100%; 
+  height: 120px; 
+  object-fit: cover; 
 }
 
 .card-title {
-  font-size: 1.1rem; /* Slightly reduce font size */
+  font-size: 1.1rem; 
   font-weight: bold;
-  margin-bottom: 0.5rem; /* Ensure space between title and button */
+  margin: 0.3rem 0; /* Reduced margin for tighter spacing */
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Ensure the title fits on one line */
+  text-overflow: ellipsis; 
 }
 
 .card-body {
   flex-grow: 1;
-  padding: 1rem;
+  padding: 0.5rem 1rem; /* Reduced padding to remove extra space */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.card-body a {
-  margin-top: 0.3rem;
-  width: fit-content;
-  align-self: start;
+.card-description {
+  margin: 0.2rem 0; /* Reduced margin between text and button */
+  color: #666;
 }
 
-/* Remove spacing between rows */
+.card-body a {
+  margin-top: 0.2rem; /* Minimized space above button */
+  padding: 0.3rem 0.8rem; /* Adjusted padding for compact button */
+  text-align: center;
+  color: #fff;
+  background-color: #333;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  width: fit-content;
+  align-self: start;
+  transition: background-color 0.3s ease;
+}
+
+.card-body a:hover {
+  background-color: #555;
+}
+
+
 .row.no-gutters {
   margin-left: 0;
   margin-right: 0;
@@ -119,6 +170,314 @@
 .row.no-gutters .col-lg-3 {
   padding-left: 0;
   padding-right: 0;
+}
+.btn-custom-read-more {
+  background-color: #808080; 
+  color: white; 
+  border: none;
+}
+
+.btn-custom-read-more:hover {
+  background-color: #696969; 
+}
+.card-img-top {
+  width: 125% !important; 
+  height: 200px !important; 
+  object-fit: cover;
+}
+.navbar-toggler {
+  display: block; /* Ensures visibility */
+  border: none;  /* Optional: Remove border around toggle button */
+  background-color: transparent; /* Optional: Adjust color if needed */
+}
+
+@media (min-width: 992px) {
+  .navbar-collapse {
+    display: block !important; /* Ensure it's expanded by default for large screens */
+  }
+
+}
+.offcanvas {
+  background-color: #e0f2f1; /* Teal background for the sidebar */
+}
+
+.offcanvas-body {
+  padding: 1rem; /* Adjusts padding for the body */
+}
+.nav-link svg {
+  color: white; /* Change only the icon (SVG) color to white */
+}
+
+
+.nav-link {
+  display: block; /* Ensures the links take the full width */
+  padding: 10px; /* Padding for links */
+  transition: background-color 0.2s ease; /* Smooth background color transition */
+  border-radius: 5px; /* Rounded corners for links */
+  margin-bottom: 10px; /* Space between boxes */
+  color: black; /* White text for links */
+  padding: 15px; /* Increase padding for links */
+  font-size: 1.2rem; /* Increase the font size for links */
+}
+
+.nav-link:hover {
+  background-color: rgb(73, 160, 160); /* Light background on hover */
+}
+
+.dropdown-toggle {
+  cursor: pointer; /* Indicates dropdown is clickable */
+  margin-bottom: 10px; /* Space below the category header */
+  font-size: 1.2rem; /* Increase font size for the category header */
+}
+
+.dropdown-menu {
+  padding: 0; /* Remove padding for dropdown */
+  background-color: white; /* Dropdown background color */
+  border: none; /* Remove border for a cleaner look */
+  width: 100%; /* Full width of the sidebar */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  padding: 10px; /* Add some padding */
+}
+
+.dropdown-item {
+  padding: 10px; /* Padding for dropdown items */
+  transition: background-color 0.2s ease; /* Smooth background color transition */
+  color: black; /* Teal color for dropdown items */
+  text-align: center; /* Center the dropdown item text */
+  font-size: 1rem; /* Increase font size for dropdown items */
+}
+
+.dropdown-item:hover {
+  background-color: rgb(73, 160, 160); /* Light background on hover */
+}
+.menu-bg {
+    background-color: #00796b; /* Teal background for the menu */
+    padding: 15px; /* Optional padding for the menu section */
+    border-radius: 5px; /* Optional rounded corners */
+}
+
+
+.offcanvas-header {
+  background-color: #00796b; /* Optional: Match header background with the menu */
+  color: white; /* Make header text white for contrast */
+  font-size: 1.5rem; /* Increase the font size for the title */
+   margin: 0; 
+}
+
+/* Style for dropdown box */
+.dropdown-box {
+  padding: 10px; /* Padding around dropdown items */
+  max-height: 300px; /* Set a max height */
+   overflow-y: auto; /* Enable scrolling if items exceed max height */
+   display: none; /* Hide by default */
+   background-color: white; /* Dropdown background color */
+   border-radius: 8px; /* Rounded corners */
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+   padding: 10px; /* Add some padding */
+   position: absolute; /* Position it relative to the dropdown toggle */
+   z-index: 1000; /* Ensure it appears above other elements */
+   width: 100%; /* Full width of the sidebar */
+}
+/* Show dropdown on toggle */
+.dropdown:hover .dropdown-box {
+  display: block; /* Show the dropdown box on hover */
+}
+.highlight-section {
+  display: flex; /* Center the content */
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  margin: 20px 0; /* Space above and below */
+  padding: 0; /* Remove padding */
+}
+
+.highlight-image-container {
+  position: relative; /* Position relative for absolute positioning of overlay */
+  width: 100%; /* Full width of the container */
+  max-width: 100%; /* Set a maximum width */
+  overflow: hidden; /* Ensure no overflow */
+}
+
+.highlight-image {
+  width: 100vw; /* Set image width to viewport width */
+  height: 70vh; /* Set a fixed height to the image (adjust as needed) */
+  object-fit: cover; /* Ensure the image covers the container */
+  margin-left: calc((100% - 100vw) / 2); /* Center image by removing left/right margin */
+  border-radius: 0; /* No rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Add a shadow for depth */
+}
+
+.highlight-text-overlay {
+  position: absolute; /* Position absolutely within the container */
+  top: 0; /* Position at the top */
+  left: 0; /* Position at the left */
+  width: 100%; /* Full width of the container */
+  height: 100%; /* Full height of the container */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  color: white; /* Text color */
+  text-align: center; /* Center align text */
+  display: flex; /* Use flexbox for centering */
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  border-radius: 0; /* No rounded corners for the overlay */
+}
+
+.highlight-title {
+  font-size: 4rem; /* Adjust size as needed */
+  margin: 0; /* Remove default margin */
+}
+
+.highlight-description {
+  font-size: 2.2rem; /* Adjust size as needed */
+  margin-top: 5px; /* Space above description */
+}
+
+footer {
+  background-color: teal; /* Dark background color */
+  color: #f8f9fa; /* Light text color */
+  margin: 0; /* Remove any margin */
+  padding: 20px 0; /* Add vertical padding */
+  width: 100%; /* Ensure full width */
+}
+
+.footer-container {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Space out items */
+  align-items: center; /* Center items vertically */
+  padding: 0 20px; /* Add some horizontal padding for aesthetics */
+  width: 100%; /* Full width */
+}
+
+.footer-left, .footer-right, .footer-center {
+  flex: 1; /* Allow sections to take equal space */
+  text-align: center; /* Center text */
+}
+
+.footer-left {
+  text-align: left; /* Align text to the left */
+}
+
+.footer-right {
+  text-align: right; /* Align text to the right */
+}
+
+.social-media-links {
+  list-style: none; /* Remove bullets */
+  padding: 0; /* Remove padding */
+}
+
+.social-media-links li {
+  display: inline; /* Display links inline */
+  margin: 0 10px; /* Space between links */
+}
+
+.social-media-links li a {
+  color: #f8f9fa; /* Link color */
+  text-decoration: none; /* Remove underline */
+}
+
+.social-media-links li a:hover {
+  color: #008080; /* Change color on hover */
+}
+
+
+/* Icons next to the "Read More" button */
+.blog-card .icon-container {
+  display: flex;
+  gap: 10px;
+}
+
+/* Individual icon styling */
+.blog-card .fav-icon,
+.blog-card .bookmark-icon {
+  color: #ccc;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Hover effects */
+.blog-card .fav-icon:hover {
+  color: #e74c3c; /* Red color for favorite */
+}
+
+.blog-card .bookmark-icon:hover {
+  color: #f39c12; /* Orange color for bookmark */
+}
+
+.fav-icon, .bookmark-icon {
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.fav-icon:hover, .bookmark-icon:hover {
+  color: #007bff; /* Optional: Change color on hover */
+}
+
+.fav-icon.text-danger {
+  color: red; /* Red if the blog is in favorites */
+}
+
+.bookmark-icon.text-primary {
+  color: #007bff; /* Blue if the blog is bookmarked */
+}
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the button to the right */
+  width: 100%; /* Ensures the button container takes full width */
+  margin-top: 20px; /* Adds space between the highlight section and the button */
+  padding-right: 20px; /* Adds some padding on the right side for spacing */
+}
+
+.add-blog-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: teal;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.add-blog-button:hover {
+  background-color: teal;
+}
+
+/* Styling for the blog cards */
+.blog-card {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.blog-card img {
+  object-fit: cover;
+  height: 200px;
+  width: 100%;
+}
+
+.card-body {
+  background-color: #f8f9fa;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.icon-container .btn {
+  border-radius: 50%;
+}
+
+.icon-container .btn:hover {
+  background-color: #f1f1f1;
 }
 
 

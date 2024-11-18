@@ -1,0 +1,25 @@
+/* BookmarkPage.css */
+.bookmark-container {
+    padding: 40px;
+    background-color: #f9f9f9;
+  }
+  
+  .bookmark-list {
+    margin-top: 20px;
+  }
+  
+  .bookmark-item {
+    background-color: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .bookmark-item h4 {
+    margin: 0 0 10px;
+  }
+  
+  .bookmark-item p {
+    margin: 5px 0;
+  }

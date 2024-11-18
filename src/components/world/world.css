@@ -1,14 +1,13 @@
-/* world.css */
 .container {
     margin-top: 20px;
   }
   
   .card {
-    transition: transform 0.2s; /* Animation on hover */
+    transition: transform 0.2s; 
   }
   
   .card:hover {
-    transform: scale(1.05); /* Slightly enlarge the card on hover */
+    transform: scale(1.05); 
   }
   
   .card-title {
