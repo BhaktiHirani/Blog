@@ -24,8 +24,15 @@ const LoginPage = () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       if (user) {
+
+  
         console.log('Login successful!');
-        navigate('/home');  // Redirect to home after successful login
+        navigate('/');  // Redirect to home after successful login
+
+        const user = JSON.parse(localStorage.getItem('user'));
+console.log(user.username); // Logs the username (email)
+console.log(user.userId);   // Logs the user ID
+
       }
     } catch (error) {
       console.error('Error logging in: ', error);

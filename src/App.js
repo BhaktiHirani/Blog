@@ -19,6 +19,7 @@ import AboutUs from './components/aboutus/aboutus';
 import NewBlogPost from './components/blogpost/blogpost';
 import BlogList from './components/blogpost/bloglist';
 import BlogDetail from './components/blogpost/blogdetail';
+import MyBlogUI from './components/my blogs';
 import { FavoritesProvider } from './components/favourite/FavoritesContext'; // Import FavoritesProvider
 import { BookmarkProvider } from './components/bookmark/BookmarkContext';  // Import the provider
 
@@ -61,7 +62,7 @@ function App() {
     <FavoritesProvider>
       <Routes>
         {/* Conditional rendering based on user authentication */}
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-blog/:postId"  element={<EditBlogPost />} />
@@ -75,6 +76,7 @@ function App() {
         <Route path="/favourite" element={<FavoritesPage />} />
         <Route path="/bookmark" element={<BookmarkPage />} />
         <Route path="/bloglist" element={<BlogList />} />
+        <Route path="/myblog" element={<MyBlogUI />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/blogpost" element={<NewBlogPost />} />

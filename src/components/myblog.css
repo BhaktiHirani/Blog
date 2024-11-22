@@ -1,0 +1,23 @@
+.my-blogs-ui h2 {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .my-blogs-ui .card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .my-blogs-ui .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .my-blogs-ui .card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .my-blogs-ui .card-footer button {
+    font-size: 0.9rem;
+  }
+  

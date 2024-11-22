@@ -91,22 +91,6 @@ const HomePage = () => {
             </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="mx-auto">
-            <div className="input-group mb-0 custom-search-input">
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search blogs..."
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    aria-label="Search blogs"
-                />
-                <button className="btn btn-outline-secondary" type="button">
-                    <FaSearch />
-                </button>
-            </div>
-        </div>
 
         {/* Right-side Links */}
         <div className="ml-auto d-flex align-items-center">
@@ -150,6 +134,10 @@ const HomePage = () => {
                     </a>
                     </li>
                     <li>
+                    <a className="nav-link" href="/myblog">
+            <FaInfoCircle style={{ marginRight: '8px', color: 'black' }} /> My Blog
+        </a>                    </li>
+                    <li>
                     <a className="nav-link" href="/aboutus">
             <FaInfoCircle style={{ marginRight: '8px', color: 'black' }} /> About Us
         </a>                    </li>
@@ -188,6 +176,22 @@ const HomePage = () => {
                 Discover insightful articles, tips, and trends on various topics, 
                 curated just for you.
             </p>
+             {/* Search Bar */}
+        <div className="mx-auto">
+            <div className="input-group mb-0 custom-search-input">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search blogs..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    aria-label="Search blogs"
+                />
+                <button className="btn btn-outline-secondary" type="button">
+                    <FaSearch />
+                </button>
+            </div>
+        </div>
         </div>
     </div>
     <div className="button-container">

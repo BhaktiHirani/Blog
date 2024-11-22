@@ -53,11 +53,11 @@
 
 
 .custom-search-input {
-  max-width: 500px; /* Increase the max width of the search bar */
   margin: 0 auto; /* Center the search bar in the navbar */
 }
 
 .input-group {
+  width: 715px;
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
 }
