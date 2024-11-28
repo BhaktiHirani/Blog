@@ -3,20 +3,20 @@ import { getFirestore, collection, query, where, getDocs } from 'firebase/firest
 import { Link } from 'react-router-dom';
 import './culture.css';
 
-const WorldPage = () => {
-  const [worldBlogs, setWorldBlogs] = useState([]);
+const CulturePage = () => {
+  const [cultureBlogs, setCultureBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchWorldBlogs();
+    fetchCultureBlogs();
   }, []);
 
   // Fetching data from Firestore
-  const fetchWorldBlogs = async () => {
+  const fetchCultureBlogs = async () => {
     const db = getFirestore();
-    const worldCollection = collection(db, 'blogPosts'); // Firestore collection
-    const q = query(worldCollection, where('category', '==', 'World'));
+    const cultureCollection = collection(db, 'globalPosts'); // Firestore collection
+    const q = query(cultureCollection, where('category', '==', 'Culture'));
 
     try {
       const querySnapshot = await getDocs(q);
@@ -24,10 +24,10 @@ const WorldPage = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setWorldBlogs(blogs);
+      setCultureBlogs(blogs);
     } catch (error) {
-      setError('Error fetching world blogs. Please try again later.');
-      console.error('Error fetching world blogs:', error);
+      setError('Error fetching culture blogs. Please try again later.');
+      console.error('Error fetching culture blogs:', error);
     } finally {
       setLoading(false);
     }
@@ -50,17 +50,17 @@ const WorldPage = () => {
   }
 
   return (
-    <div className="world-container">
+    <div className="culture-container">
       <h2 className="text-center mb-5">Culture Blogs</h2>
-      {worldBlogs.length === 0 ? (
-        <p className="text-center">No blogs found in the World category.</p>
+      {cultureBlogs.length === 0 ? (
+        <p className="text-center">No blogs found in the Culture category.</p>
       ) : (
         <div className="row g-4">
-          {worldBlogs.map((blog) => (
+          {cultureBlogs.map((blog) => (
             <div key={blog.id} className="col-12 col-md-6 col-lg-4">
-              <div className="card world-card shadow-sm">
+              <div className="card culture-card shadow-sm">
                 <img
-                  src={blog.imageUrl || '/assests/images/food/placeholder-image-url.jpg'}
+                  src={blog.imageUrl || '/assets/images/food/placeholder-image-url.jpg'}
                   className="card-img-top"
                   alt={blog.title || 'Blog image'}
                 />
@@ -89,4 +89,4 @@ const WorldPage = () => {
   );
 };
 
-export default WorldPage;
+export default CulturePage;

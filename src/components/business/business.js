@@ -12,10 +12,10 @@ const BusinessPage = () => {
     fetchBusinessBlogs();
   }, []);
 
-  // Fetching data from Firestore
+  // Fetching business blogs from Firestore
   const fetchBusinessBlogs = async () => {
     const db = getFirestore();
-    const businessCollection = collection(db, 'blogPosts'); // Firestore collection
+    const businessCollection = collection(db, 'globalPosts'); // Firestore collection
     const q = query(businessCollection, where('category', '==', 'Business'));
 
     try {
@@ -33,7 +33,7 @@ const BusinessPage = () => {
     }
   };
 
-  // Truncate content for preview
+  // Truncate content for a preview
   const truncateDescription = (text, limit) => {
     if (text.length > limit) {
       return text.substring(0, limit) + '...';

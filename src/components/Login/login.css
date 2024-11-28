@@ -30,8 +30,15 @@
   }
   
   .input-group {
+    width: 100%; /* Dynamically adjust to container */
+    max-width: 390px; /* Set a max width if needed */
     margin-bottom: 15px;
-  }
+}
+
+.form-control {
+    width: 100%; /* Match the parent width */
+}
+
   
   .btn-primary {
     background-color: #0c7683;
@@ -87,6 +94,7 @@
     }
   }
   .input-group {
+    width: 390px;
     display: flex; 
     align-items: center;
   }

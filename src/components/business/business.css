@@ -1,20 +1,46 @@
-.container {
-    margin-top: 20px;
-  }
-  
-  .card {
-    transition: transform 0.2s;
-  }
-  
-  .card:hover {
-    transform: scale(1.05); 
-  }
-  
-  .card-title {
-    font-size: 1.2em;
-  }
-  
-  .card-text {
-    font-size: 1em;
-  }
-  
+.business-container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.business-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.business-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-text {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.text-center {
+  text-align: center;
+}

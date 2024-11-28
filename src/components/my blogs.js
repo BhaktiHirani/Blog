@@ -1,97 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { fetchBlogPosts } from '../firebase/firestore';
 import { FaHeart, FaBookmark } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import '../firebase';
+import './myblog.css';
 
-const MyBlogUI = ({ myBlogs = [], currentUser = null, handleEdit, isLoading = false }) => {
+const BlogList = () => {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   useEffect(() => {
-    if (myBlogs && currentUser) {
-      // Only update the posts when myBlogs or currentUser changes
-      const filteredPosts = myBlogs.filter(post => post.userId === currentUser.uid);
-      setPosts(filteredPosts);
-    }
+    const loadPosts = async () => {
+      try {
+        const posts = await fetchBlogPosts();
+        setPosts(posts);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch posts.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  }, [myBlogs, currentUser]);  // This dependency array ensures the effect only runs when these props change
+    loadPosts();
+  }, []);
 
-  const addToFavorites = (post) => {
-    console.log('Added to favorites', post);
+  const handleReadMore = (postId) => {
+    // Navigate to the BlogPost page when Read More is clicked
+    navigate(`/blog/${postId}`);
   };
 
-  const addToBookmarks = (post) => {
-    console.log('Added to bookmarks', post);
-  };
-
-  const truncateDescription = (text, length) => {
+  const truncate = (text, length) => {
     if (!text) return '';
     return text.length > length ? text.substring(0, length) + '...' : text;
   };
 
-  if (isLoading) {
-    return (
-      <div className="d-flex justify-content-center">
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container my-blogs-ui p-4">
-      <h2 className="mb-4 text-center">My Blogs</h2>
-
-      {posts.length > 0 ? (
-        <div className="row justify-content-center">
+    <div className="blog-list-container">
+      <h2 className="blog-title">All Blogs</h2>
+      {loading ? (
+        <p className="loading-text">Loading...</p>
+      ) : error ? (
+        <p className="error-text">{error}</p>
+      ) : posts.length > 0 ? (
+        <ul className="blog-list">
           {posts.map((post) => (
-            <div key={post.id} className="col-12 col-md-6 col-lg-4 mb-4 d-flex align-items-stretch">
-              <div className="card shadow-sm border-0 w-100 position-relative blog-card">
+            <li key={post.id} className="blog-item">
+              <div className="blog-card">
                 <img
-                  src={post.imageUrl ? `/assets/images/food/${post.imageUrl}` : '/assets/images/food/placeholder-image.jpg'}
+                  src={post.imageUrl || '/assets/images/food/placeholder-image-url.jpg'}
                   className="card-img-top"
-                  alt={post.title}
-                  loading="lazy"
+                  alt={post.title || 'Blog image'}
                 />
                 <div className="card-body">
-                  <h5 className="card-title">{post.title}</h5>
-                  <p className="card-text">{truncateDescription(post.content, 100)}</p>
-                </div>
-
-                <div className="d-flex justify-content-between align-items-center p-3">
-                  <Link to={`/blog/${post.id}`} className="btn btn-sm" style={{ backgroundColor: 'teal', borderColor: 'teal', color: 'white' }}>
-                    Read More
-                  </Link>
-
-                  <div className="icon-container d-flex gap-2">
-                    <button className="btn btn-sm" onClick={() => addToFavorites(post)}>
-                      <FaHeart style={{ color: 'teal' }} />
+                  {/* Truncate Title */}
+                  <h3 className="blog-item-title">
+                    {truncate(post.title, 30)} {/* Truncate title to 30 characters */}
+                  </h3>
+                  <p className="blog-description">
+                    {post.content.substring(0, 100)}...
+                  </p>
+                  <div className="blog-actions">
+                    <button
+                      className="read-more-link"
+                      onClick={() => handleReadMore(post.id)}
+                    >
+                      Read More
                     </button>
-                    <button className="btn btn-sm" onClick={() => addToBookmarks(post)}>
-                      <FaBookmark style={{ color: 'teal' }} />
-                    </button>
-                    <button className="btn btn-sm btn-warning" onClick={() => handleEdit(post.id)}>
-                      Edit
-                    </button>
+                    <div className="action-buttons">
+                      <button className="action-button">
+                        <FaHeart />
+                      </button>
+                      <button className="action-button">
+                        <FaBookmark />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       ) : (
-        <p className="text-center text-muted">You haven’t posted any blogs yet. Start sharing your ideas!</p>
+        <p className="no-blogs-text">No blogs found.</p>
       )}
     </div>
   );
 };
 
-// Define prop types for validation
-MyBlogUI.propTypes = {
-  myBlogs: PropTypes.array,
-  currentUser: PropTypes.object,
-  handleEdit: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool,
-};
-
-export default MyBlogUI;
+export default BlogList;

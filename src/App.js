@@ -4,10 +4,10 @@ import { auth } from './firebase'; // Import your Firebase configuration
 import LoginPage from './components/Login/login';
 import Signup from './components/Register/register';
 import HomePage from './components/homepage/homepage';
-import SportsBlogs from './components/sports/sports';
-import Fashion from './components/fashion/fashion';
+import SportsPage from './components/sports/sports';
+import FashionPage from './components/fashion/fashion';
 import WorldPage from './components/world/world';
-import Business from './components/business/business';
+import BusinessPage from './components/business/business';
 import Culture from './components/culture/culture';
 import TechPage from './components/tech/tech';
 import HealthBlog from './components/health/health';
@@ -66,9 +66,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-blog/:postId"  element={<EditBlogPost />} />
-        <Route path="/fashion" element={<Fashion />} />
+        <Route path="/fashion" element={<FashionPage />} />
         <Route path="/world" element={<WorldPage />} />
-        <Route path="/business" element={<Business />} />
+        <Route path="/business" element={<BusinessPage />} />
         <Route path="/culture" element={<Culture />} />
         <Route path="/tech" element={<TechPage />} />
         <Route path="/health" element={<HealthBlog />} />
@@ -80,7 +80,7 @@ function App() {
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/blogpost" element={<NewBlogPost />} />
-        <Route path="/sportsblog" element={<SportsBlogs /> } />
+        <Route path="/sportsblog" element={<SportsPage /> } />
       </Routes>
     </FavoritesProvider>
     </BookmarkProvider>

@@ -15,7 +15,7 @@ const HealthPage = () => {
   // Fetching data from Firestore
   const fetchHealthBlogs = async () => {
     const db = getFirestore();
-    const healthCollection = collection(db, 'blogPosts'); // Firestore collection
+    const healthCollection = collection(db, 'globalPosts'); // Firestore collection
     const q = query(healthCollection, where('category', '==', 'Health'));
 
     try {

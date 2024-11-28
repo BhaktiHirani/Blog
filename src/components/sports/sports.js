@@ -5,14 +5,17 @@ import './sports.css';
 
 const SportsPage = () => {
   const [sportsBlogs, setSportsBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchSportsBlogs();
   }, []);
 
+  // Fetching data from Firestore
   const fetchSportsBlogs = async () => {
     const db = getFirestore();
-    const sportsCollection = collection(db, 'blogPosts'); // Firestore collection
+    const sportsCollection = collection(db, 'globalPosts'); // Firestore collection
     const q = query(sportsCollection, where('category', '==', 'Sports'));
 
     try {
@@ -23,16 +26,28 @@ const SportsPage = () => {
       }));
       setSportsBlogs(blogs);
     } catch (error) {
+      setError('Error fetching sports blogs. Please try again later.');
       console.error('Error fetching sports blogs:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Truncate content for preview
   const truncateDescription = (text, limit) => {
     if (text.length > limit) {
       return text.substring(0, limit) + '...';
     }
     return text;
   };
+
+  if (loading) {
+    return <p className="text-center">Loading...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-danger">{error}</p>;
+  }
 
   return (
     <div className="sports-container">
@@ -45,16 +60,13 @@ const SportsPage = () => {
             <div key={blog.id} className="col-12 col-md-6 col-lg-4">
               <div className="card sports-card shadow-sm">
                 <img
-                  src={blog.imageUrl ? `/assests/images/food/${blog.imageUrl}` : '/assests/images/food/placeholder-image-url.jpg'}
+                  src={blog.imageUrl || '/assets/images/food/placeholder-image-url.jpg'}
                   className="card-img-top"
-                  alt={blog.title}
+                  alt={blog.title || 'Blog image'}
                 />
                 <div className="card-body">
-                  <h5 className="card-title">{blog.title}</h5>
+                  <h5 className="card-title">{blog.title || 'Untitled'}</h5>
                   <p className="card-text">{truncateDescription(blog.content, 100)}</p>
-                  <p className="tags">
-                    <strong>Tags:</strong> {blog.tags}
-                  </p>
                   <div className="d-flex justify-content-between align-items-center">
                     <Link to={`/post/${blog.id}`} className="btn btn-secondary">
                       Read More

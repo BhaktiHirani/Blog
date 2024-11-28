@@ -13,7 +13,7 @@ const WorldPage = () => {
   // Fetching data from Firestore
   const fetchWorldBlogs = async () => {
     const db = getFirestore();
-    const worldCollection = collection(db, 'blogPosts'); // Firestore collection
+    const worldCollection = collection(db, 'globalPosts'); // Firestore collection
     const q = query(worldCollection, where('category', '==', 'World'));
 
     try {

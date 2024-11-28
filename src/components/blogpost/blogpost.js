@@ -1,155 +1,183 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '../../firebase';
-import { collection, doc, addDoc, updateDoc, getDoc } from 'firebase/firestore';
-import './blogpost.css';
+import React, { useState, useEffect } from "react";
+import { getAuth } from "firebase/auth";
+import { db } from "../../firebase"; // Use Firestore only for data storage
+import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore";
+import "./blogpost.css";
 
-const NewBlogPost = ({ postId }) => {
+const NewBlogPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
-  const [image, setImage] = useState(null);
   const [category, setCategory] = useState("");
+  const [image, setImage] = useState(null);
+  const [imageBase64, setImageBase64] = useState(""); // Store the base64 image
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    // If there's a postId, fetch the blog data to edit
-    if (postId) {
-      fetchBlogData();
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user) {
+      setUserId(user.uid);
+      setUserName(user.displayName || "Anonymous"); // Assuming `displayName` is available
+    } else {
+      alert("Please log in to create a blog post.");
     }
-  }, [postId]);
+  }, []);
 
-  const fetchBlogData = async () => {
+  // Convert image file to base64 format
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageBase64(reader.result); // Store base64 string in state
+      };
+      reader.readAsDataURL(file);
+      setImage(file);
+    }
+  };
+
+  // Submit function for the blog post form
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+  
+    if (!imageBase64) {
+      alert("Please upload an image.");
+      setLoading(false);
+      return;
+    }
+  
     try {
-      const postDoc = doc(db, "blogPosts", postId);
-      const docSnapshot = await getDoc(postDoc);
-      if (docSnapshot.exists()) {
-        const postData = docSnapshot.data();
-        setTitle(postData.title);
-        setContent(postData.content);
-        setTags(postData.tags);
-        setCategory(postData.category);
-        // Optionally handle the image here if storing image URLs in Firestore
-      } else {
-        console.error("Document does not exist!");
-      }
+      // Generate a unique postId
+      const postId = doc(collection(db, "globalPosts")).id; // Generate an ID
+  
+      // Prepare blog data
+      const blogData = {
+        title,
+        content,
+        tags: tags.split(",").map((tag) => tag.trim()),
+        category,
+        imageUrl: imageBase64, // Use base64 string
+        createdAt: serverTimestamp(),
+        createdBy: userId,
+      };
+  
+      // Save to user's blogPosts sub-collection
+      await setDoc(doc(db, "users", userId, "blogPosts", postId), blogData);
+  
+      // Save to globalPosts collection
+      await setDoc(doc(db, "globalPosts", postId), blogData);
+  
+      alert("Blog post created successfully!");
+      resetForm();
     } catch (error) {
-      console.error("Error fetching document: ", error);
+      console.error("Error creating blog post:", error);
+      alert("Failed to create blog post. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleImageUpload = (e) => {
-    setImage(e.target.files[0]);
+  // Function to reset the form fields
+  const resetForm = () => {
+    setTitle("");
+    setContent("");
+    setTags("");
+    setCategory("");
+    setImage(null);
+    setImageBase64("");
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const blogData = {
-        title: title,
-        content: content,
-        tags: tags,
-        imageUrl: image ? image.name : "", // Adjust image handling if necessary
-        category: category,
-        createdAt: postId ? undefined : new Date() // Only set createdAt for new posts
-      };
-
-      if (postId) {
-        // Update existing post
-        const postRef = doc(db, "blogPosts", postId);
-        await updateDoc(postRef, blogData);
-        alert("Blog updated successfully!");
-      } else {
-        // Create new post
-        await addDoc(collection(db, "blogPosts"), blogData);
-        alert("Blog created successfully!");
-      }
-
-      // Reset form
-      setTitle("");
-      setContent("");
-      setTags("");
-      setImage(null);
-      setCategory("");
-
-    } catch (error) {
-      console.error("Error submitting form: ", error);
-      alert("Error submitting blog post. Please try again.");
-    }
-  };
-
-  const handleEditClick = () => {
-    // Navigate to the Edit page (ensure routing is properly set)
-    window.location.href = `/edit-blog/${postId}`;
-  };
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="new-blog-post-container">
-      <h2>{postId ? "Edit Blog Post" : "Create a New Blog Post"}</h2>
+      <h2>Create a New Blog Post</h2>
       <form onSubmit={handleSubmit} className="blog-form">
-        <label>
-          Title:
+        <div className="form-group">
+          <label htmlFor="title">Title:</label>
           <input
+            id="title"
             type="text"
+            className="form-input"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required
             placeholder="Enter your blog title"
+            required
           />
-        </label>
+        </div>
 
-        <label>
-          Content:
+        <div className="form-group">
+          <label htmlFor="content">Content:</label>
           <textarea
+            id="content"
+            className="form-input"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            required
             placeholder="Write your blog content here..."
+            rows="6"
+            required
           />
-        </label>
+        </div>
 
-        <label>
-          Tags (comma-separated):
+        <div className="form-group">
+          <label htmlFor="tags">Tags (comma-separated):</label>
           <input
+            id="tags"
             type="text"
+            className="form-input"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
-            placeholder="e.g., React, JavaScript, Web Development"
+            placeholder="e.g., React, Firebase, Blog"
           />
-        </label>
+        </div>
 
-        <label>
-          Upload Cover Image:
-          <input type="file" onChange={handleImageUpload} accept="image/*" />
-        </label>
-
-        <label>
-          Category:
+        <div className="form-group">
+          <label htmlFor="category">Category:</label>
           <select
+            id="category"
+            className="form-select"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required
           >
-            <option value="" disabled>Select a category</option>
+            <option value="" disabled>
+              Select a category
+            </option>
             <option value="Sports">Sports</option>
             <option value="Lifestyle">Lifestyle</option>
             <option value="Health">Health</option>
             <option value="Business">Business</option>
             <option value="Culture">Culture</option>
-            <option value="Tech">Tech</option>
             <option value="Fashion">Fashion</option>
             <option value="World">World</option>
+            <option value="Tech">Tech</option>
           </select>
-        </label>
+        </div>
 
-        <button type="submit" className="submit-button">{postId ? "Update Blog" : "Submit Blog"}</button>
-        
-      
+        <div className="form-group">
+          <label htmlFor="image">Upload Image:</label>
+          <input
+            id="image"
+            type="file"
+            className="form-input"
+            onChange={handleImageChange}
+            accept="image/*"
+          />
+        </div>
+
+        {imageBase64 && (
+          <div className="preview">
+            <p>Image Preview:</p>
+            <img src={imageBase64} alt="Preview" style={{ maxWidth: "100%" }} />
+          </div>
+        )}
+
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? "Submitting..." : "Submit"}
+        </button>
       </form>
     </div>
   );

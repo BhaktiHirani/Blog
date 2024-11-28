@@ -12,7 +12,7 @@ const TechPage = () => {
 
   const fetchTechBlogs = async () => {
     const db = getFirestore();
-    const techCollection = collection(db, 'blogPosts'); // Firestore collection
+    const techCollection = collection(db, 'globalPosts'); // Firestore collection
     const q = query(techCollection, where('category', '==', 'Tech'));
 
     try {
@@ -44,11 +44,12 @@ const TechPage = () => {
           {techBlogs.map((blog) => (
             <div key={blog.id} className="col-12 col-md-6 col-lg-4">
               <div className="card tech-card shadow-sm">
-                <img
-                  src={blog.imageUrl ? `/assests/images/food/${blog.imageUrl}` : '/assests/images/food/placeholder-image-url.jpg'}
+              <img
+                  src={blog.imageUrl ? blog.imageUrl : '/assets/images/world/placeholder-image-url.jpg'}
                   className="card-img-top"
                   alt={blog.title}
                 />
+
                 <div className="card-body">
                   <h5 className="card-title">{blog.title}</h5>
                   <p className="card-text">{truncateDescription(blog.content, 100)}</p>
