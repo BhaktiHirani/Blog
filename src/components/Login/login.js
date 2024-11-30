@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase';  // Correct path to the firebase.js file
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase'; // Adjust the path to your Firebase configuration file
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './login.css';
 
@@ -29,7 +29,27 @@ const LoginPage = () => {
 
       if (user) {
         console.log('Login successful!');
-        navigate('/');  // Redirect to home after successful login
+
+        // Fetch user role from Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          const userRole = userData.role;
+
+          if (userRole === 'Admin') {
+            console.log('Redirecting to Admin Dashboard');
+            navigate('/dashboard'); // Redirect to Admin Dashboard
+          } else if (userRole === 'User') {
+            console.log('Redirecting to User Dashboard');
+            navigate('/homepage'); // Redirect to User Dashboard
+          } else {
+            setError('Role not assigned. Please contact support.');
+          }
+        } else {
+          setError('User data not found in Firestore. Please contact support.');
+        }
       }
     } catch (error) {
       console.error('Error logging in: ', error);
@@ -44,57 +64,6 @@ const LoginPage = () => {
       setLoading(false); // Stop loading indicator
     }
   };
-
-  const loginUser = async (email, password) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-  
-      // Fetch the user document from Firestore using 'db'
-      const userDoc = await db.collection('users').doc(user.uid).get();
-      if (userDoc.exists) {
-        console.log('User data:', userDoc.data());
-        // Now you can fetch the user's blogPosts subcollection if needed
-        const blogPostsSnapshot = await db.collection('users').doc(user.uid).collection('blogPosts').get();
-        blogPostsSnapshot.forEach((doc) => {
-          console.log('Blog Post:', doc.data());
-        });
-      }
-    } catch (error) {
-      console.error('Error logging in user:', error.message);
-    }
-
-const handleLogin = async (email, password) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    // Check if the user exists in Firestore
-    const userDocRef = doc(db, 'users', user.uid);
-    const userDoc = await getDoc(userDocRef);
-
-    // If the user does not exist in Firestore, create their data
-    if (!userDoc.exists()) {
-      console.log('User not found in Firestore, creating document...');
-      
-      await setDoc(userDocRef, {
-        email: user.email,
-        uid: user.uid,
-        createdAt: new Date(),
-        // Any other fields you want to store
-      });
-      console.log('User data created in Firestore');
-    } else {
-      console.log('User found in Firestore:', userDoc.data());
-    }
-    
-  } catch (error) {
-    console.error('Error logging in:', error);
-  }
-};
-
-  };
-  
 
   return (
     <div className="login-page">
@@ -132,7 +101,7 @@ const handleLogin = async (email, password) => {
                 <label htmlFor="password">Password</label>
                 <div className="input-group">
                   <div className="input-group-prepend">
-                    <i className='ri-lock-line'></i>
+                    <i className="ri-lock-line"></i>
                   </div>
                   <input
                     type="password"

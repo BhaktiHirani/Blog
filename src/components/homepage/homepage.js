@@ -17,7 +17,18 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filteredBlogs, setFilteredPosts] = useState([]);
   const navigate = useNavigate(); // Initialize useNavigate hook
+
+  useEffect(() => {
+    const results = posts.filter(
+      (post) =>
+        post.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredPosts(results);
+  }, [searchTerm, posts]);
+  
  
 
   // Fetch posts from Firestore
@@ -78,7 +89,7 @@ const HomePage = () => {
   
 
   return (
-    <div className="container-fluid homepage vh-100 d-flex flex-column">
+    <div className="container-fluid homepage vh-100 d-flex flex-column"    style={{overflow:"scroll",maxHeight:"800px"}}>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark custom-navbar shadow-sm">
         <div className="container-fluid">
@@ -128,7 +139,7 @@ const HomePage = () => {
         <div className="offcanvas-body">
           <ul className="list-unstyled">
             <li>
-              <Link className="nav-link" to="/home">
+              <Link className="nav-link" to="/">
                 <FaHome className="text-black" /> Home
               </Link>
             </li>
@@ -179,20 +190,20 @@ const HomePage = () => {
               Discover insightful articles, tips, and trends on various topics.
             </p>
             <div className="mx-auto">
-              <div className="input-group mb-0 custom-search-input">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search blogs..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  aria-label="Search blogs"
-                />
-                <button className="btn btn-outline-secondary" type="button">
-                  <FaSearch />
-                </button>
-              </div>
-            </div>
+        <div className="input-group mb-0 custom-search-input">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search posts..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Search posts"
+          />
+          <button className="btn btn-outline-secondary" type="button">
+            <FaSearch />
+          </button>
+        </div>
+      </div>
           </div>
         </div>
       </div>
@@ -209,9 +220,9 @@ const HomePage = () => {
         <p className="text-center">Loading...</p>
       ) : error ? (
         <p className="text-center text-danger">{error}</p>
-      ) : posts.length > 0 ? (
+      ) : filteredPosts.length > 0 ? (
         <div className="row">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
               <div className="col-12 col-sm-6 col-md-3 mb-4" key={post.id}>
               <div className="card h-100 shadow-sm">
                 <img

@@ -16,6 +16,7 @@ const NewBlogPost = () => {
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
+    
     const auth = getAuth();
     const user = auth.currentUser;
     if (user) {

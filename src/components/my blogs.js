@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchBlogPosts } from '../firebase/firestore';
 import { FaHeart, FaBookmark } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import '../firebase';
 import './myblog.css';
 
@@ -9,7 +9,9 @@ const BlogList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
+  const location = useLocation(); // Tracks the current route
+
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -27,7 +29,6 @@ const BlogList = () => {
   }, []);
 
   const handleReadMore = (postId) => {
-    // Navigate to the BlogPost page when Read More is clicked
     navigate(`/blog/${postId}`);
   };
 
@@ -54,12 +55,9 @@ const BlogList = () => {
                   alt={post.title || 'Blog image'}
                 />
                 <div className="card-body">
-                  {/* Truncate Title */}
-                  <h3 className="blog-item-title">
-                    {truncate(post.title, 30)} {/* Truncate title to 30 characters */}
-                  </h3>
+                  <h3 className="blog-item-title">{truncate(post.title, 30)}</h3>
                   <p className="blog-description">
-                    {post.content.substring(0, 100)}...
+                    {truncate(post.content, 100)}
                   </p>
                   <div className="blog-actions">
                     <button

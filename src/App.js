@@ -22,7 +22,10 @@ import BlogDetail from './components/blogpost/blogdetail';
 import MyBlogUI from './components/my blogs';
 import { FavoritesProvider } from './components/favourite/FavoritesContext'; // Import FavoritesProvider
 import { BookmarkProvider } from './components/bookmark/BookmarkContext';  // Import the provider
-
+import Dashboard from './components/adminpanel/dashboard';
+import Settings from './components/adminpanel/setting';
+import PendingBlogs from './components/adminpanel/pendingblogs';
+import ManageUsers from './components/adminpanel/manageusers';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,7 +65,7 @@ function App() {
     <FavoritesProvider>
       <Routes>
         {/* Conditional rendering based on user authentication */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/homepage" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-blog/:postId"  element={<EditBlogPost />} />
@@ -81,6 +84,16 @@ function App() {
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/blogpost" element={<NewBlogPost />} />
         <Route path="/sportsblog" element={<SportsPage /> } />
+        <Route path="/dashboard" element={<Dashboard />}/>
+        <Route path="/adminpanel/pendingblogs" element={<PendingBlogs />}/>
+        <Route path="/adminpanel/manageusers" element={<ManageUsers />}/>
+        <Route path="/adminpanel/setting" element={<Settings />}/>
+
+
+       
+
+
+
       </Routes>
     </FavoritesProvider>
     </BookmarkProvider>

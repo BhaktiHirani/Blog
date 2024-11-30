@@ -5,8 +5,10 @@
     font-family: Arial, sans-serif;
     margin: 0 auto;
     padding: 20px;
-    max-width: 1200px; /* Limit the max width of the page content */
+    max-width: 1500px; /* Limit the max width of the page content */
     text-align: center;
+    max-height: 700px;
+   overflow-y: scroll;
   }
   
   /* Header Section */

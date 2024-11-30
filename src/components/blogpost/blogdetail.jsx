@@ -37,7 +37,7 @@ const BlogPost = () => {
   const formattedDate = post?.createdAt ? new Date(post.createdAt).toLocaleDateString() : 'No date available';
 
   return (
-    <div className="container mt-5">
+    <div className=" container mt-5"    style={{overflowY:"scroll",maxHeight:"650px",maxWidth:"1500px"}}>
       <div className="row justify-content-center">
         <div className="col-lg-8">
           {/* Blog Post Title (Centered) */}

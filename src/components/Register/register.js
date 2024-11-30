@@ -103,6 +103,14 @@ const handleSignUp = async (email, password) => {
         alert("Email is already in use. Please use a different email.");
         return;
       }
+
+       // Navigate based on role
+    if (formData.role === 'admin') {
+      navigate('/dashboard'); // Admin panel route
+    } else {
+      navigate('/user-dashboard'); // User dashboard route (optional)
+    }
+
   
       // Register user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
