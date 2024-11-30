@@ -50,5 +50,41 @@
     margin: auto;
   }
   
+/* 
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #343a40;
+    height: 100vh;
+    padding-top: 30px;
+  }
 
+
+   
+  .sidebar ul {
+    padding-left: 0;
+  }
   
+  .sidebar ul li {
+    padding: 10px 20px;
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+  } */
+
+
+
+  .dashboard{
+    display: flex;
+    flex-direction: row;
+  }
+
+
+  .user-list{
+    height: 600px;
+    overflow-y: scroll;
+  }

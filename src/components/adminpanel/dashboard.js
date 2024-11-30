@@ -1,7 +1,7 @@
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase"; // Your Firestore initialization
 import React, { useState, useEffect } from "react";
-
+import { Link } from "react-router-dom";
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -22,7 +22,12 @@ const Dashboard = () => {
             const userData = userDoc.data();
 
             // Fetch the blogPosts subcollection for the current user
-            const blogPostsCollection = collection(db, "users", userId, "blogPosts");
+            const blogPostsCollection = collection(
+              db,
+              "users",
+              userId,
+              "blogPosts"
+            );
             const blogDocs = await getDocs(blogPostsCollection);
 
             // Map the blog documents for the current user
@@ -71,26 +76,58 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard">
-      <div className="user-list">
+    <div className="dashboard d-flex">
+      {/* Sidebar */}
+      <div
+        className="sidebar bg-dark text-white"
+        style={{ width: "250px", height: "100vh", flexShrink: 0 }}
+      >
+        <h3 className="text-center mt-4">Admin Panel</h3>
+        <ul className="list-unstyled mt-4">
+          <li>
+            <Link className="text-white" to="/adminpanel">
+              Dashboard
+            </Link>
+          </li>
+          <li>
+            <Link className="text-white" to="/adminpanel/pendingblogs">
+              Pending Blogs
+            </Link>
+          </li>
+          <li>
+            <Link className="text-white" to="/adminpanel/manageusers">
+              Manage Users
+            </Link>
+          </li>
+          <li>
+            <Link className="text-white" to="/adminpanel/setting">
+              Settings
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* User list */}
+      <div className="user-list d-flex flex-wrap gap-4 p-5" style={{ flex: 1 }}>
         {/* List users */}
         {users.map((user) => (
           <div
             key={user.id}
-            className="user-box"
+            className="card user-box shadow"
+            style={{ width: "18rem", cursor: "pointer" }}
             onClick={() => {
               setSelectedUser(user);
-              fetchUserDetails(user.id); // Fetch details when a user is selected
+              fetchUserDetails(user.id); 
             }}
-          >
-            <h5>{user.fullName}</h5>
-            <p>{user.email}</p>
-            <p>{user.blogs.length} blog(s)</p>
+          > 
+            <div className="card-body">
+              <h5 className="card-title">{user.fullname || "No Name"}</h5>
+              <h6 className="card-subtitle mb-2 text-muted">{user.email}</h6>
+              <p className="card-text">{user.blogs.length} blog(s)</p>
+            </div>
           </div>
         ))}
-      </div>
-
-      {selectedUser && (
+         {selectedUser && (
         <div className="user-details">
           <h3>Details for {selectedUser.fullName}</h3>
           <div>
@@ -113,6 +150,9 @@ const Dashboard = () => {
           )}
         </div>
       )}
+      </div>
+
+     
     </div>
   );
 };
