@@ -75,28 +75,73 @@ const Dashboard = () => {
     <div className="dashboard d-flex">
       {/* Sidebar */}
       <div
-        className="sidebar bg-dark text-white position-fixed"
-        style={{ width: "250px", height: "100vh", flexShrink: 0 }}
+        className="sidebar text-white position-fixed"
+        style={{
+          width: "250px",
+          height: "100vh",
+          flexShrink: 0,
+          backgroundColor: "#008080",
+        }}
       >
         <h3 className="text-center mt-4">Admin Panel</h3>
         <ul className="list-unstyled mt-4">
-          <li>
-            <Link className="text-white" to="/adminpanel">
+          <li
+            style={{
+              marginBottom: "30px",
+              fontSize: "1.2rem",
+              marginLeft: "45px",
+            }}
+          >
+            <Link
+              className="text-white"
+              style={{ textDecoration: "none" }}
+              to="/adminpanel"
+            >
               Dashboard
             </Link>
           </li>
-          <li>
-            <Link className="text-white" to="/adminpanel/pendingblogs">
+          <li
+            style={{
+              marginBottom: "30px",
+              fontSize: "1.2rem",
+              marginLeft: "45px",
+            }}
+          >
+            <Link
+              className="text-white"
+              style={{ textDecoration: "none" }}
+              to="/adminpanel/pendingblogs"
+            >
               Pending Blogs
             </Link>
           </li>
-          <li>
-            <Link className="text-white" to="/adminpanel/manageusers">
+          <li
+            style={{
+              marginBottom: "30px",
+              fontSize: "1.2rem",
+              marginLeft: "45px",
+            }}
+          >
+            <Link
+              className="text-white"
+              style={{ textDecoration: "none" }}
+              to="/adminpanel/manageusers"
+            >
               Manage Users
             </Link>
           </li>
-          <li>
-            <Link className="text-white" to="/adminpanel/setting">
+          <li
+            style={{
+              marginBottom: "30px",
+              fontSize: "1.2rem",
+              marginLeft: "45px",
+            }}
+          >
+            <Link
+              className="text-white"
+              style={{ textDecoration: "none" }}
+              to="/adminpanel/setting"
+            >
               Settings
             </Link>
           </li>
@@ -104,21 +149,67 @@ const Dashboard = () => {
       </div>
 
       {/* User list */}
-      <div className="user-list d-flex flex-wrap gap-4 p-5" style={{ flex: 1, marginLeft: "250px" }}>
+      <div
+        className="user-list d-flex flex-wrap"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px",
+          padding: "20px",
+          marginLeft: "250px",
+        }}
+      >
         {users.map((user) => (
           <div
             key={user.id}
-            className="card user-box shadow"
-            style={{ width: "18rem", cursor: "pointer" }}
+            className="user-box shadow"
+            style={{
+              width: "18rem",
+              cursor: "pointer",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+              transition: "transform 0.2s, box-shadow 0.2s", // Add smooth hover transitions
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.boxShadow = "0 8px 12px rgba(0, 0, 0, 0.2)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+            }}
             onClick={() => {
               setSelectedUser(user);
               fetchUserDetails(user.id);
             }}
           >
-            <div className="card-body">
-              <h5 className="card-title">{user.fullname || "No Name"}</h5>
-              <h6 className="card-subtitle mb-2 text-muted">{user.email}</h6>
-              <p className="card-text">{user.blogs.length} blog(s)</p>
+            <div style={{ padding: "20px" }}>
+              <h5
+                style={{
+                  marginBottom: "10px",
+                  fontSize: "1.25rem",
+                  borderRadius: "5px",
+                  backgroundColor: "#008080",
+                  color: "white",
+                  textAlign: "justify",
+                  padding: "5px",
+                }}
+              >
+                {user.fullname || "No Name"}
+              </h5>
+              <h6
+                style={{
+                  marginBottom: "8px",
+                  fontSize: "1rem",
+                  color: "#6c757d",
+                }}
+              >
+                {user.email}
+              </h6>
+              <p style={{ marginBottom: "0", fontSize: "0.9rem" }}>
+                {user.blogs.length} blog(s)
+              </p>
             </div>
           </div>
         ))}
@@ -139,10 +230,23 @@ const Dashboard = () => {
           >
             <button
               className="btn-close position-absolute"
-              style={{ top: "10px", right: "10px" }}
+              style={{ top: "10px", right: "10px" , width:"10px",height:"10px"}}
               onClick={closePopup}
             ></button>
-            <h3>Details for {selectedUser.fullName}</h3>
+            <h3
+            
+              style={{
+                width: "430px",
+                borderRadius:"5px",
+                backgroundColor: "#008080",
+                color: "white",
+                textAlign: "justify",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                transition: "transform 0.2s, box-shadow 0.2s", // Add smooth hover transitions
+              }}
+            >
+              Details for {selectedUser.fullName}
+            </h3>
             <div>
               <p>Email: {userDetails?.email}</p>
               <p>Role: {userDetails?.role}</p>
@@ -162,6 +266,9 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+
+      
     </div>
   );
 };
