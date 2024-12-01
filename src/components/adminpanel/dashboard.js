@@ -1,13 +1,12 @@
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { db } from "../../firebase"; // Your Firestore initialization
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase"; // Your Firestore initialization
+
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -15,13 +14,11 @@ const Dashboard = () => {
       try {
         const userDocs = await getDocs(usersCollection);
 
-        // Fetch the blogPosts subcollection for each user
         const usersData = await Promise.all(
           userDocs.docs.map(async (userDoc) => {
             const userId = userDoc.id;
             const userData = userDoc.data();
 
-            // Fetch the blogPosts subcollection for the current user
             const blogPostsCollection = collection(
               db,
               "users",
@@ -30,10 +27,9 @@ const Dashboard = () => {
             );
             const blogDocs = await getDocs(blogPostsCollection);
 
-            // Map the blog documents for the current user
             const userBlogs = blogDocs.docs.map((blogDoc) => ({
               id: blogDoc.id,
-              ...blogDoc.data(), // Includes title, content, etc.
+              ...blogDoc.data(),
             }));
 
             return {
@@ -44,12 +40,9 @@ const Dashboard = () => {
           })
         );
 
-        setUsers(usersData); // Set users and their blog posts
-        setLoading(false);
+        setUsers(usersData);
       } catch (error) {
         console.error("Error fetching users and blogs:", error);
-        setError("Failed to fetch users or blogs.");
-        setLoading(false);
       }
     };
 
@@ -63,23 +56,26 @@ const Dashboard = () => {
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setUserDetails({
-          fullName: userData.fullName || "No Name Provided", // Fallback value
+          fullName: userData.fullName || "No Name Provided",
           email: userData.email || "N/A",
-          role: userData.role || "User", // Fallback value
+          role: userData.role || "User",
         });
-      } else {
-        console.log("No such user!");
       }
     } catch (error) {
       console.error("Error fetching user details: ", error);
     }
   };
 
+  const closePopup = () => {
+    setSelectedUser(null);
+    setUserDetails(null);
+  };
+
   return (
     <div className="dashboard d-flex">
       {/* Sidebar */}
       <div
-        className="sidebar bg-dark text-white"
+        className="sidebar bg-dark text-white position-fixed"
         style={{ width: "250px", height: "100vh", flexShrink: 0 }}
       >
         <h3 className="text-center mt-4">Admin Panel</h3>
@@ -108,8 +104,7 @@ const Dashboard = () => {
       </div>
 
       {/* User list */}
-      <div className="user-list d-flex flex-wrap gap-4 p-5" style={{ flex: 1 }}>
-        {/* List users */}
+      <div className="user-list d-flex flex-wrap gap-4 p-5" style={{ flex: 1, marginLeft: "250px" }}>
         {users.map((user) => (
           <div
             key={user.id}
@@ -117,9 +112,9 @@ const Dashboard = () => {
             style={{ width: "18rem", cursor: "pointer" }}
             onClick={() => {
               setSelectedUser(user);
-              fetchUserDetails(user.id); 
+              fetchUserDetails(user.id);
             }}
-          > 
+          >
             <div className="card-body">
               <h5 className="card-title">{user.fullname || "No Name"}</h5>
               <h6 className="card-subtitle mb-2 text-muted">{user.email}</h6>
@@ -127,32 +122,46 @@ const Dashboard = () => {
             </div>
           </div>
         ))}
-         {selectedUser && (
-        <div className="user-details">
-          <h3>Details for {selectedUser.fullName}</h3>
-          <div>
-            <p>Email: {userDetails?.email}</p>
-            <p>Role: {userDetails?.role}</p>
-          </div>
-
-          {/* Show blog posts for the selected user */}
-          {selectedUser.blogs.length > 0 ? (
-            <ul>
-              {selectedUser.blogs.map((blog) => (
-                <li key={blog.id}>
-                  <h4>{blog.title || "No Title Available"}</h4>
-                  <p>{blog.content || "No Content Available"}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No blogs found for this user.</p>
-          )}
-        </div>
-      )}
       </div>
 
-     
+      {/* Popup for Details */}
+      {selectedUser && (
+        <div
+          className="popup position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1050,
+          }}
+        >
+          <div
+            className="popup-content bg-white p-4 rounded position-relative"
+            style={{ width: "500px", maxHeight: "90vh", overflowY: "auto" }}
+          >
+            <button
+              className="btn-close position-absolute"
+              style={{ top: "10px", right: "10px" }}
+              onClick={closePopup}
+            ></button>
+            <h3>Details for {selectedUser.fullName}</h3>
+            <div>
+              <p>Email: {userDetails?.email}</p>
+              <p>Role: {userDetails?.role}</p>
+            </div>
+            {selectedUser.blogs.length > 0 ? (
+              <ul>
+                {selectedUser.blogs.map((blog) => (
+                  <li key={blog.id}>
+                    <h4>{blog.title || "No Title Available"}</h4>
+                    <p>{blog.content || "No Content Available"}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No blogs found for this user.</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

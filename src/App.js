@@ -65,7 +65,7 @@ function App() {
     <FavoritesProvider>
       <Routes>
         {/* Conditional rendering based on user authentication */}
-        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/edit-blog/:postId"  element={<EditBlogPost />} />
