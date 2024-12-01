@@ -5,8 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const ProfilePage = () => {
-  const [userEmail, setUserEmail] = useState('');
-  const [userAvatar, setUserAvatar] = useState(null);
+  const [userDetails, setUserDetails] = useState({
+    fullName: '',
+    email: '',
+    avatar: null,
+  });
   const [loading, setLoading] = useState(true);
   const auth = getAuth();
   const db = getFirestore();
@@ -15,7 +18,10 @@ const ProfilePage = () => {
   useEffect(() => {
     const user = auth.currentUser;
     if (user) {
-      setUserEmail(user.email);
+      setUserDetails(prevState => ({
+        ...prevState,
+        email: user.email,
+      }));
       fetchUserDetails(user.uid);
     } else {
       navigate('/login');
@@ -29,7 +35,13 @@ const ProfilePage = () => {
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        setUserAvatar(userData.avatar || null);
+
+        // Set user details (fullName, email, avatar)
+        setUserDetails({
+          fullName: userData.fullName || "No Name Provided",
+          email: userData.email || "N/A",
+          avatar: userData.avatar || null,
+        });
       } else {
         console.error("User document does not exist.");
       }
@@ -49,6 +61,12 @@ const ProfilePage = () => {
     }
   };
 
+  const getInitials = (email) => {
+    // Extract the first letter of the email before the '@' symbol
+    const firstLetter = email.charAt(0).toUpperCase();
+    return firstLetter;
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -58,11 +76,11 @@ const ProfilePage = () => {
       <div style={styles.profileCard}>
         <h2 style={styles.profileHeading}>Profile</h2>
         <div style={styles.avatarContainer}>
-          {userAvatar ? (
-            <img src={userAvatar} alt="Profile Avatar" style={styles.avatarImg} />
+          {userDetails.avatar ? (
+            <img src={userDetails.avatar} alt="Profile Avatar" style={styles.avatarImg} />
           ) : (
             <div style={styles.defaultAvatar}>
-              <span style={styles.avatarPlaceholder}>?</span>
+              <span style={styles.avatarPlaceholder}>{getInitials(userDetails.email)}</span>
             </div>
           )}
         </div>
@@ -74,7 +92,10 @@ const ProfilePage = () => {
             <FaTrash style={{ ...styles.icon, color: '#dc3545' }} />
           </button>
         </div>
-        <p><strong>Email:</strong> {userEmail}</p>
+        <div style={styles.userInfo}>
+          <p><strong>Full Name:</strong> {userDetails.fullName}</p>
+          <p><strong>Email:</strong> {userDetails.email}</p>
+        </div>
         <button onClick={handleLogout} style={styles.logoutButton}>
           Logout
         </button>
@@ -89,7 +110,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f0f2f5',
+    padding: '10px',
   },
   profileCard: {
     width: '100%',
@@ -99,6 +121,7 @@ const styles = {
     borderRadius: '10px',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
     textAlign: 'center',
+    position: 'relative',
   },
   avatarContainer: {
     position: 'relative',
@@ -151,6 +174,13 @@ const styles = {
     marginBottom: '20px',
     fontSize: '24px',
     color: '#333',
+    fontWeight: 'bold',
+  },
+  userInfo: {
+    margin: '20px 0',
+    fontSize: '16px',
+    color: '#555',
+    textAlign: 'left',
   },
   logoutButton: {
     marginTop: '20px',
@@ -162,6 +192,10 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
+    transition: 'background-color 0.2s',
+  },
+  logoutButtonHover: {
+    backgroundColor: '#c82333',
   },
 };
 
