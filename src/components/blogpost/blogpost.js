@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import { db } from "../../firebase"; // Use Firestore only for data storage
-import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, collection, updateDoc } from "firebase/firestore";
 import "./blogpost.css";
+
 
 const NewBlogPost = () => {
   const [title, setTitle] = useState("");
@@ -14,9 +15,9 @@ const NewBlogPost = () => {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState("");
+  const [imagePreview, setImagePreview] = useState(""); // Image preview for user
 
   useEffect(() => {
-    
     const auth = getAuth();
     const user = auth.currentUser;
     if (user) {
@@ -34,6 +35,7 @@ const NewBlogPost = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImageBase64(reader.result); // Store base64 string in state
+        setImagePreview(reader.result); // Update image preview
       };
       reader.readAsDataURL(file);
       setImage(file);
@@ -41,38 +43,39 @@ const NewBlogPost = () => {
   };
 
   // Submit function for the blog post form
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
-    if (!imageBase64) {
-      alert("Please upload an image.");
+
+    if (!title || !content || !tags || !category || !imageBase64) {
+      alert("All fields are required.");
       setLoading(false);
       return;
     }
-  
+
     try {
       // Generate a unique postId
       const postId = doc(collection(db, "globalPosts")).id; // Generate an ID
-  
+
       // Prepare blog data
       const blogData = {
         title,
         content,
-        tags: tags.split(",").map((tag) => tag.trim()),
+        tags: tags.split(",").map((tag) => tag.trim()), // Split tags and remove extra spaces
         category,
         imageUrl: imageBase64, // Use base64 string
         createdAt: serverTimestamp(),
         createdBy: userId,
+        createdByName: userName, // Include username for easier admin visibility
+        status: "Pending",
       };
-  
+
       // Save to user's blogPosts sub-collection
       await setDoc(doc(db, "users", userId, "blogPosts", postId), blogData);
-  
+
       // Save to globalPosts collection
       await setDoc(doc(db, "globalPosts", postId), blogData);
-  
+
       alert("Blog post created successfully!");
       resetForm();
     } catch (error) {
@@ -91,6 +94,13 @@ const NewBlogPost = () => {
     setCategory("");
     setImage(null);
     setImageBase64("");
+    setImagePreview(""); // Reset image preview
+  };
+
+  // Optional: Update post status (for admins, etc.)
+  const updatePostStatus = async (postId, newStatus) => {
+    const postRef = doc(db, "globalPosts", postId);
+    await updateDoc(postRef, { status: newStatus });
   };
 
   return (

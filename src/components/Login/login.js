@@ -43,7 +43,7 @@ const LoginPage = () => {
             navigate('/dashboard'); // Redirect to Admin Dashboard
           } else if (userRole === 'User') {
             console.log('Redirecting to User Dashboard');
-            navigate('/homepage'); // Redirect to User Dashboard
+            navigate('/'); // Redirect to User Dashboard
           } else {
             setError('Role not assigned. Please contact support.');
           }

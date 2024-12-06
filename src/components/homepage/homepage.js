@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
+import {
+  collection,
+  getDocs,
+  doc,
+  deleteDoc,
+  getDoc,
+} from "firebase/firestore";import { db } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
@@ -18,6 +23,9 @@ const HomePage = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredBlogs, setFilteredPosts] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   useEffect(() => {
@@ -30,6 +38,61 @@ const HomePage = () => {
   }, [searchTerm, posts]);
   
  
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersCollection = collection(db, "users");
+        const userDocs = await getDocs(usersCollection);
+        const usersData = await Promise.all(
+          userDocs.docs.map(async (userDoc) => {
+            const userId = userDoc.id;
+            const userData = userDoc.data();
+            const blogPostsCollection = collection(db, "users", userId, "blogPosts");
+            const blogDocs = await getDocs(blogPostsCollection);
+            const blogs = blogDocs.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
+            return { id: userId, ...userData, blogs };
+          })
+        );
+        setUsers(usersData);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        alert("Failed to load users.");
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const handleDeleteBlog = async (userId, blogId) => {
+    if (!window.confirm("Are you sure you want to delete this blog?")) return;
+
+    try {
+      await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
+      setSelectedUser((prevUser) => ({
+        ...prevUser,
+        blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
+      }));
+      alert("Blog deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+      alert("Failed to delete blog.");
+    }
+  };
+
+  const fetchUserDetails = async (userId) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", userId));
+      setUserDetails(userDoc.exists() ? userDoc.data() : null);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
+
+  
+
 
   // Fetch posts from Firestore
   useEffect(() => {

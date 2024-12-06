@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  updateDoc,
+  Timestamp,
+  writeBatch,
+} from "react";
 import { Link } from "react-router-dom";
 import {
   collection,
@@ -6,6 +12,9 @@ import {
   doc,
   getDoc,
   deleteDoc,
+  where,
+  query,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase"; // Your Firestore initialization
 
@@ -13,39 +22,112 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const [pendingPosts, setPendingPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [blogs, setBlogs] = useState([]);
   const handleDeleteBlog = async (userId, blogId) => {
-    const confirmation = window.confirm(
+    const confirmDelete = window.confirm(
       "Are you sure you want to delete this blog?"
     );
-    if (!confirmation) return;
+    if (!confirmDelete) return;
 
     try {
-      // Delete the blog from Firestore
-      const blogRef = doc(db, "users", userId, "blogPosts", blogId);
+      const blogRef = doc(db, "users", userId, "blogPosts", blogId); // Adjust Firestore structure
       await deleteDoc(blogRef);
+      alert("Blog deleted successfully!");
 
-      // Update the selectedUser state
+      // Update blogs in selectedUser
+      const updatedBlogs = selectedUser.blogs.filter(
+        (blog) => blog.id !== blogId
+      );
       setSelectedUser((prevUser) => ({
         ...prevUser,
-        blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
+        blogs: updatedBlogs,
       }));
-
-      // Optionally update the users list state
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === userId
-            ? {
-                ...user,
-                blogs: user.blogs.filter((blog) => blog.id !== blogId),
-              }
-            : user
-        )
-      );
-
-      alert("Blog deleted successfully!");
     } catch (error) {
-      console.error("Error deleting blog:", error.message); // Log error details
+      console.error("Error deleting blog:", error);
       alert("Failed to delete the blog. Please try again.");
+    }
+  };
+
+  const fetchUserBlogs = async (userId) => {
+    try {
+      const blogPostsCollection = collection(db, "users", userId, "blogPosts");
+      const blogDocs = await getDocs(blogPostsCollection);
+      return blogDocs.docs.map((blogDoc) => ({
+        id: blogDoc.id,
+        ...blogDoc.data(),
+      }));
+    } catch (error) {
+      console.error("Error fetching user blogs:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const fetchPendingPosts = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "globalPosts"));
+        const posts = querySnapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .filter((data) => data.status === "Pending");
+        setPendingPosts(posts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        alert("Failed to fetch posts.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPendingPosts();
+  }, []);
+
+  const fetchAndUpdateBlogs = async (userId) => {
+    try {
+      const blogs = await fetchUserBlogs(userId); // Fetch updated blog list
+      setBlogs(blogs); // Update state
+    } catch (error) {
+      console.error("Error fetching updated blogs:", error);
+    }
+  };
+
+  // Function to update both global and user-specific blog posts
+
+  // Function to approve or decline a blog post
+  const updateBlogStatus = async (postId, newStatus, userId = null) => {
+    try {
+      // 1. Update globalPosts
+      const globalPostRef = doc(db, "globalPosts", postId);
+      await updateDoc(globalPostRef, { status: newStatus });
+
+      // 2. Optionally, update user's blogPosts if userId is provided
+      if (userId) {
+        const userPostRef = doc(db, "users", userId, "blogPosts", postId);
+        await updateDoc(userPostRef, { status: newStatus });
+      }
+
+      alert("Blog status updated successfully!");
+    } catch (error) {
+      console.error("Error updating blog status:", error);
+      alert("Failed to update blog status. Please try again.");
+    }
+  };
+
+  const addBlogToAdminView = async (userId, postId, title, content) => {
+    try {
+      const blogRef = doc(db, `allBlogs/${postId}`);
+      await setDoc(blogRef, {
+        userId,
+        postId,
+        title,
+        content,
+        status: "Pending", // Default status
+        createdAt: new Date(),
+      });
+    } catch (error) {
+      console.error("Error adding blog to admin view:", error);
     }
   };
 
@@ -282,7 +364,12 @@ const Dashboard = () => {
         >
           <div
             className="popup-content bg-white p-4 rounded position-relative"
-            style={{ width: "900px",   maxWidth: "90%", maxHeight: "90vh", overflowY: "auto" }}
+            style={{
+              width: "900px",
+              maxWidth: "90%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
           >
             <button
               className="btn-close position-absolute"
@@ -345,30 +432,29 @@ const Dashboard = () => {
                           cursor: "pointer",
                           marginRight: "20px",
                         }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteBlog(selectedUser.id, blog.id);
-                        }}
+                        onClick={() =>
+                          handleDeleteBlog(selectedUser.id, blog.id)
+                        } // Use selectedUser.id
                       >
                         Delete
                       </button>
+
                       <button
-                        style={{
-                          marginTop: "10px",
-                          backgroundColor: "#008080",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "4px",
-                          padding: "5px 10px",
-                          cursor: "pointer",
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteBlog(selectedUser.id, blog.id);
-                        }}
+                      style={{
+                        marginTop: "10px",
+                        backgroundColor: "#008080",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        padding: "5px 10px",
+                        cursor: "pointer",
+                        marginRight: "20px",
+                      }}
+                        onClick={() => updateBlogStatus(blog.id, "Approved")}
                       >
                         Approve
                       </button>
+                    
                     </li>
                   </div>
                 ))}

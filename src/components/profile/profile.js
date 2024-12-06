@@ -38,7 +38,7 @@ const ProfilePage = () => {
 
         // Set user details (fullName, email, avatar)
         setUserDetails({
-          fullName: userData.fullName || "No Name Provided",
+          fullName: userData.fullname || "No Name Provided",
           email: userData.email || "N/A",
           avatar: userData.avatar || null,
         });
