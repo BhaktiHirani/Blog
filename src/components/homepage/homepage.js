@@ -5,7 +5,7 @@ import {
   getDocs,
   doc,
   deleteDoc,
-  getDoc,
+  getDoc,query, where
 } from "firebase/firestore";import { db } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -101,8 +101,12 @@ const HomePage = () => {
         const user = getAuth().currentUser;
         if (!user) throw new Error("User not authenticated.");
 
-        const userId = user.uid;
-        const querySnapshot = await getDocs(collection(db, "globalPosts"));
+        const postsQuery = query(
+          collection(db, "globalPosts"), // Collection reference
+          where("status", "==", "Approved") // Filter by status
+        );
+
+        const querySnapshot = await getDocs(postsQuery);
 
         if (!querySnapshot.empty) {
           const postsData = querySnapshot.docs.map((doc) => ({
@@ -110,17 +114,18 @@ const HomePage = () => {
             ...doc.data(),
           }));
           setPosts(postsData);
+        } else {
+          setPosts([]); // Set empty array if no approved posts
         }
       } catch (err) {
         setError(err.message || "Failed to load posts.");
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading spinner or state
       }
     };
 
     fetchPosts();
   }, []);
-
   const handleReadMore = (postId) => {
     // Navigate to the BlogPost page when Read More is clicked
     navigate(`/blog/${postId}`);
