@@ -226,8 +226,8 @@ const HomePage = () => {
             aria-label="Close"
           ></button>
         </div>
-        <div className="offcanvas-body">
-          <ul className="list-unstyled">
+        <div className="offcanvas-body" >
+          <ul className="list-unstyled" style={{gap:""}}>
             <li>
               <Link className="nav-link" to="/">
                 <FaHome className="text-black" /> Home
@@ -244,10 +244,10 @@ const HomePage = () => {
               </Link>
             </li>
             <li>
-              <div className="dropdown">
-                <h6 className="dropdown-toggle text-black" data-bs-toggle="dropdown" aria-expanded="false">
+              <div className="dropdown" style={{marginLeft:"15px"}}>
+                <div className="dropdown-toggle text-black" data-bs-toggle="dropdown" aria-expanded="false">
                   <FaListAlt className="text-black" /> Categories
-                </h6>
+                </div>
                 <ul className="dropdown-menu">
                   {categories.map((category) => (
                     <li key={category.name}>
