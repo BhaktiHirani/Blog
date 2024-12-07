@@ -1,82 +1,78 @@
-import React from 'react';
-import { FaHeart } from 'react-icons/fa';
-import { useFavorites } from '../../components/favourite/FavoritesContext';
-import { Card, Button, Row, Col, Spinner } from 'react-bootstrap';
-import './favourite.css';
+import React, { useState, useEffect } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase";
+import { getAuth } from "firebase/auth";
+import { Link } from "react-router-dom";
 
-const FavoritesPage = () => {
-  const { favorites, removeFromFavorites, isLoading, error } = useFavorites();
+const FavouritesPage = () => {
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const truncateText = (text, limit) => {
-    if (!text) return '';
-    return text.length > limit ? `${text.substring(0, limit)}...` : text;
-  };
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      const user = getAuth().currentUser;
+      if (!user) {
+        setError("Please log in to see your favorites.");
+        setLoading(false);
+        return;
+      }
 
-  if (isLoading) {
-    return (
-      <div className="container text-center mt-4">
-        <Spinner animation="border" variant="primary" />
-      </div>
-    );
-  }
+      try {
+        const favoritesQuery = query(
+          collection(db, "users", user.uid, "favorites")
+        );
 
-  if (error) {
-    return (
-      <div className="container text-center mt-4">
-        <p className="text-danger">{error}</p>
-      </div>
-    );
-  }
+        const querySnapshot = await getDocs(favoritesQuery);
+        const favoritesData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setFavorites(favoritesData);
+      } catch (err) {
+        setError(err.message || "Failed to load favorites.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
 
   return (
-    <div className="container mt-4">
-      <h2 className="text-center mb-4">
-        <FaHeart color="red" /> My Favorites
-      </h2>
-
-      <Row>
-        {favorites.length > 0 ? (
-          favorites.map((post) => (
-            <Col key={post.id} md={4} sm={6} className="mb-4">
-              <Card className="shadow-sm">
-                <Card.Img
-                  variant="top"
-                  src={post.image || '/assets/images/food/placeholder.jpg'}
-                  alt={post.title}
-                  style={{
-                    objectFit: 'cover',
-                    height: '200px',
-                    borderTopLeftRadius: '0.25rem',
-                    borderTopRightRadius: '0.25rem',
-                  }}
+    <div className="container">
+      <h2>Your Favorite Blogs</h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="text-danger">{error}</p>
+      ) : favorites.length > 0 ? (
+        <div className="row">
+          {favorites.map((fav) => (
+            <div className="col-md-3 mb-4" key={fav.id}>
+              <div className="card h-100">
+                <img
+                  src={fav.imageUrl || "/placeholder-image.jpg"}
+                  className="card-img-top"
+                  alt={fav.title}
                 />
-                <Card.Body>
-                  <Card.Title>{post.title}</Card.Title>
-                  <Card.Text className="text-muted">
-                    {truncateText(post.description, 100)}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Content:</strong> <br />
-                    {truncateText(post.content, 150)}
-                  </Card.Text>
-
-                  <Button
-                    variant="danger"
-                    onClick={() => removeFromFavorites(post.id)}
-                    className="w-100"
-                  >
-                    Remove from Favorites
-                  </Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))
-        ) : (
-          <p className="text-center text-muted">You have no favorites yet.</p>
-        )}
-      </Row>
+                <div className="card-body">
+                  <h5 className="card-title">{fav.title}</h5>
+                  <p className="card-text">{fav.description}</p>
+                  <Link to={`/blog/${fav.postId}`} className="btn btn-primary">
+                    Read More
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No favorite blogs found.</p>
+      )}
     </div>
   );
 };
 
-export default FavoritesPage;
+export default FavouritesPage;

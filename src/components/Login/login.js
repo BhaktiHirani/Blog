@@ -16,32 +16,38 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     if (!email || !password) {
       setError('Email and password are required');
       return;
     }
-
+  
     try {
       setLoading(true); // Show loading indicator
+  
+      // Check for hardcoded admin credentials first
+      if (email === "admin@gmail.com" && password === "Admin@123") {
+        console.log('Redirecting to Admin Dashboard');
+        navigate('/dashboard'); // Redirect to Admin Dashboard
+        return;
+      }
+  
+      // For other users, use Firebase authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+  
       if (user) {
         console.log('Login successful!');
-
+  
         // Fetch user role from Firestore
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
-
+  
         if (userDoc.exists()) {
           const userData = userDoc.data();
           const userRole = userData.role;
-
-          if (userRole === 'Admin') {
-            console.log('Redirecting to Admin Dashboard');
-            navigate('/dashboard'); // Redirect to Admin Dashboard
-          } else if (userRole === 'User') {
+  
+          if (userRole === 'User') {
             console.log('Redirecting to User Dashboard');
             navigate('/'); // Redirect to User Dashboard
           } else {
@@ -64,7 +70,7 @@ const LoginPage = () => {
       setLoading(false); // Stop loading indicator
     }
   };
-
+  
   return (
     <div className="login-page">
       <div className="container login-container">
