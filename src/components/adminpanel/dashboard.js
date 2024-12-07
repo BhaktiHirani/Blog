@@ -64,50 +64,59 @@ const Dashboard = () => {
   };
 
   // Handle blog deletion
-  // const handleDeleteBlog = async (userId, blogId) => {
-  //   const confirmDelete = window.confirm(
-  //     "Are you sure you want to delete this blog?"
-  //   );
-  //   if (!confirmDelete) return;
-
-  //   try {
-  //     await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
-  //     setSelectedUser((prevUser) => ({
-  //       ...prevUser,
-  //       blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
-  //     }));
-  //     alert("Blog deleted successfully!");
-  //   } catch (error) {
-  //     console.error("Error deleting blog:", error);
-  //     alert("Failed to delete the blog. Please try again.");
-  //   }
-  // };
   const handleDeleteBlog = async (userId, blogId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this blog?"
     );
     if (!confirmDelete) return;
-  
+
     try {
       // Delete from user's blogPosts collection
       await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
-  
+
       // Delete from globalPosts collection
       await deleteDoc(doc(db, "globalPosts", blogId));
-  
+
       // Update state to remove the deleted blog
       setSelectedUser((prevUser) => ({
         ...prevUser,
         blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
       }));
-  
+
       alert("Blog deleted successfully from both collections!");
     } catch (error) {
       console.error("Error deleting blog:", error);
       alert("Failed to delete the blog. Please try again.");
     }
   };
-  
+
+  // Handle user deletion
+  const handleDeleteUser = async (userId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user and all their blog posts?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      // Delete user's blog posts
+      const blogPostsCollection = collection(db, "users", userId, "blogPosts");
+      const blogDocs = await getDocs(blogPostsCollection);
+
+      await Promise.all(blogDocs.docs.map((blog) => deleteDoc(blog.ref)));
+
+      // Delete the user document
+      await deleteDoc(doc(db, "users", userId));
+
+      // Update state to remove the user from the list
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      setSelectedUser(null);
+
+      alert("User and their blogs deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Failed to delete the user. Please try again.");
+    }
+  };
 
   // Handle blog approval
   const handleApproveBlog = async (userId, blogId, currentStatus) => {
@@ -195,6 +204,19 @@ const Dashboard = () => {
             <p>
               <b>Role:</b> {userDetails?.role || "User"}
             </p>
+
+            <button
+              className="btn-delete-user"
+              onClick={() => handleDeleteUser(selectedUser.id)}
+              style={{
+                marginBottom: "15px",
+                color: "white",
+                backgroundColor: "red",
+              }}
+            >
+              Delete User
+            </button>
+
             {selectedUser.blogs.length > 0 ? (
               <ul>
                 {selectedUser.blogs.map((blog) => (
@@ -206,11 +228,15 @@ const Dashboard = () => {
                         handleDeleteBlog(selectedUser.id, blog.id)
                       }
                     >
-                      Delete
+                      Delete Blog
                     </button>
                     <button
                       onClick={() =>
-                        handleApproveBlog(selectedUser.id, blog.id, blog.status)
+                        handleApproveBlog(
+                          selectedUser.id,
+                          blog.id,
+                          blog.status
+                        )
                       }
                     >
                       Approve
