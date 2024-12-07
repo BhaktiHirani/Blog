@@ -5,7 +5,7 @@ import {
   getDocs,
   doc,
   deleteDoc,
-  getDoc,query, where
+  getDoc,query, where ,  addDoc
 } from "firebase/firestore";import { db } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -130,7 +130,29 @@ const HomePage = () => {
     // Navigate to the BlogPost page when Read More is clicked
     navigate(`/blog/${postId}`);
   };
-
+  const handleFavorite = async (post) => {
+    try {
+      const user = getAuth().currentUser;
+      if (!user) {
+        alert("You need to be logged in to add to favorites.");
+        return;
+      }
+  
+      // Reference to the favorites collection for the current user
+      const favoritesRef = collection(db, "users", user.uid, "favorites");
+  
+      await addDoc(favoritesRef, {
+        ...post,
+        addedAt: new Date(),
+      });
+  
+      alert("Blog added to favorites!");
+      navigate("/favourite"); // Redirect to the favorites page after adding
+    } catch (error) {
+      console.error("Error adding to favorites:", error);
+      alert("Failed to add blog to favorites.");
+    }
+  };
   const truncateText = (text, length = 100) => {
     if (text && text.length > length) {
       return text.substring(0, length) + '...';
@@ -311,12 +333,10 @@ const HomePage = () => {
                     Read More
                   </button>
                   <div className="action-buttons">
-                    <button className="action-button">
-                      <FaHeart />
-                    </button>
-                    <button className="action-button">
-                      <FaBookmark />
-                    </button>
+                  <button className="action-button" onClick={() => handleFavorite(post)}>
+  <FaHeart />
+</button>
+                    
                   </div>
                 </div>
               </div>
