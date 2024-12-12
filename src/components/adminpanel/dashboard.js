@@ -8,8 +8,8 @@ import {
   deleteDoc,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "../../firebase"; // Your Firestore initialization
 import { FaTrash, FaCheckCircle } from "react-icons/fa";
+import { db, auth } from "../../firebase"; // Assuming you are exporting db and auth from firebase.js
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -64,32 +64,16 @@ const Dashboard = () => {
     }
   };
 
-  // Handle blog deletion
   const handleDeleteBlog = async (userId, blogId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this blog?"
-    );
-    if (!confirmDelete) return;
-
     try {
-      // Delete from user's blogPosts collection
-      await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
-
-      // Delete from globalPosts collection
-      await deleteDoc(doc(db, "globalPosts", blogId));
-
-      // Update state to remove the deleted blog
-      setSelectedUser((prevUser) => ({
-        ...prevUser,
-        blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
-      }));
-
-      alert("Blog deleted successfully from both collections!");
+      const blogRef = doc(db, "users", userId, "blogPosts", blogId);
+      await deleteDoc(blogRef);
+      alert("Blog deleted successfully");
     } catch (error) {
       console.error("Error deleting blog:", error);
-      alert("Failed to delete the blog. Please try again.");
     }
   };
+
 
   // Handle user deletion
   const handleDeleteUser = async (userId) => {
@@ -125,32 +109,31 @@ const Dashboard = () => {
       alert("This blog is already approved.");
       return;
     }
-
+  
     try {
+      // Update blog status for the user's blog post
       const blogRef = doc(db, "users", userId, "blogPosts", blogId);
       await updateDoc(blogRef, { status: "Approved" });
+  
+      // Update status in globalPosts collection
       const globalPostRef = doc(db, "globalPosts", blogId);
       await updateDoc(globalPostRef, { status: "Approved" });
-
-      setSelectedUser((prevUser) => ({
-        ...prevUser,
-        blogs: prevUser.blogs.map((blog) =>
-          blog.id === blogId ? { ...blog, status: "Approved" } : blog
-        ),
-      }));
-
+  
       alert("Blog approved successfully!");
     } catch (error) {
       console.error("Error approving blog:", error);
       alert("Failed to approve the blog. Please try again.");
     }
   };
-
+  
+  
   // Close popup
   const closePopup = () => {
     setSelectedUser(null);
     setUserDetails(null);
   };
+
+  
 
   return (
     <div className="dashboard d-flex">
@@ -327,35 +310,39 @@ const Dashboard = () => {
                     <button
                       style={{
                         marginTop: "10px",
-                        backgroundColor: "#008080",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        padding: "7px 10px",
-                        cursor: "pointer",
-                        marginRight: "20px",
-                      }}
-                      onClick={() => handleDeleteBlog(selectedUser.id, blog.id)}
-                    >
-                     <FaTrash/> Delete Blog
-                    </button>
-                    <button
-                      style={{
-                        marginTop: "10px",
-                        backgroundColor: "#008080",
-                        color: "white",
-                        border: "none",
+                        backgroundColor: "transparent",
+                        color: "#008080",
+                        border: "1px solid #008080",
                         borderRadius: "4px",
                         padding: "5px 10px",
                         cursor: "pointer",
-                        marginRight: "20px",
+                        marginRight: "10px",
                       }}
                       onClick={() =>
                         handleApproveBlog(selectedUser.id, blog.id, blog.status)
                       }
                     >
-                     < FaCheckCircle/>  Approve
+                      <FaCheckCircle style={{ marginRight: "5px" }} />
+                      {blog.status === "Approved" ? "Approved" : "Approve"}
                     </button>
+                    <button
+                      style={{
+                        marginTop: "10px",
+                        backgroundColor: "transparent",
+                        color: "red",
+                        border: "1px solid red",
+                        borderRadius: "4px",
+                        padding: "5px 10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        handleDeleteBlog(selectedUser.id, blog.id)
+                      }
+                    >
+                      <FaTrash style={{ marginRight: "5px" }} />
+                      Delete
+                    </button>
+                   
                   </li>
                 ))}
               </ul>
