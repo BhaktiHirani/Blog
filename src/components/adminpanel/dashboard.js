@@ -9,9 +9,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase"; // Your Firestore initialization
-import {
-FaTrash,FaCheckCircle 
-} from 'react-icons/fa';
+import { FaTrash, FaCheckCircle } from "react-icons/fa"; // Corrected import
+
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -66,49 +65,31 @@ const Dashboard = () => {
   };
 
   // Handle blog deletion
-  // const handleDeleteBlog = async (userId, blogId) => {
-  //   const confirmDelete = window.confirm(
-  //     "Are you sure you want to delete this blog?"
-  //   );
-  //   if (!confirmDelete) return;
-  //   try {
-  //     await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
-  //     setSelectedUser((prevUser) => ({
-  //       ...prevUser,
-  //       blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
-  //     }));
-  //     alert("Blog deleted successfully!");
-  //   } catch (error) {
-  //     console.error("Error deleting blog:", error);
-  //     alert("Failed to delete the blog. Please try again.");
-  //   }
-  // };
   const handleDeleteBlog = async (userId, blogId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this blog?"
     );
     if (!confirmDelete) return;
-  
+
     try {
       // Delete from user's blogPosts collection
       await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
-  
+
       // Delete from globalPosts collection
       await deleteDoc(doc(db, "globalPosts", blogId));
-  
+
       // Update state to remove the deleted blog
       setSelectedUser((prevUser) => ({
         ...prevUser,
         blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
       }));
-  
+
       alert("Blog deleted successfully from both collections!");
     } catch (error) {
       console.error("Error deleting blog:", error);
-      alert("Failed to delete the blog. Please try again.");
     }
   };
-  
+
   // Handle user deletion
   const handleDeleteUser = async (userId) => {
     const confirmDelete = window.confirm(
@@ -124,7 +105,8 @@ const Dashboard = () => {
       await Promise.all(blogDocs.docs.map((blog) => deleteDoc(blog.ref)));
 
       // Delete the user document
-      await newFunction();
+      await deleteDoc(doc(db, "users", userId));
+
       // Update state to remove the user from the list
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
       setSelectedUser(null);
@@ -133,10 +115,6 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error deleting user:", error);
       alert("Failed to delete the user. Please try again.");
-    }
-
-    async function newFunction() {
-      await deleteDoc(doc(db, "users", userId));
     }
   };
 
@@ -148,17 +126,13 @@ const Dashboard = () => {
     }
 
     try {
+      // Update blog status for the user's blog post
       const blogRef = doc(db, "users", userId, "blogPosts", blogId);
       await updateDoc(blogRef, { status: "Approved" });
+
+      // Update status in globalPosts collection
       const globalPostRef = doc(db, "globalPosts", blogId);
       await updateDoc(globalPostRef, { status: "Approved" });
-
-      setSelectedUser((prevUser) => ({
-        ...prevUser,
-        blogs: prevUser.blogs.map((blog) =>
-          blog.id === blogId ? { ...blog, status: "Approved" } : blog
-        ),
-      }));
 
       alert("Blog approved successfully!");
     } catch (error) {
@@ -194,11 +168,7 @@ const Dashboard = () => {
               marginLeft: "45px",
             }}
           >
-            <Link
-              className="text-white"
-              style={{ textDecoration: "none" }}
-              to="/"
-            >
+            <Link className="text-white" style={{ textDecoration: "none" }} to="/">
               Home
             </Link>
           </li>
@@ -217,8 +187,6 @@ const Dashboard = () => {
               Dashboard
             </Link>
           </li>
-      
-      
         </ul>
       </div>
 
@@ -283,7 +251,6 @@ const Dashboard = () => {
               </h6>
               <p style={{ marginBottom: "0", fontSize: "0.9rem" }}>
                 {user.blogs.length} blog(s)
-                {user.blogs.length} blog's
               </p>
             </div>
           </div>
@@ -312,16 +279,16 @@ const Dashboard = () => {
               Details for {selectedUser.fullname || "No Name"}
             </h3>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <p style={{ marginLeft: "7px" ,display: "flex", flexDirection: "row" }} >
+              <p style={{ marginLeft: "7px", display: "flex", flexDirection: "row" }}>
                 <b>Email: </b>{userDetails?.email || "N/A"}
               </p>{" "}
               <button
                 className="btn-delete-user"
                 onClick={() => handleDeleteUser(selectedUser.id)}
                 style={{
-                  background:"none",
+                  background: "none",
                   marginTop: "5px",
-                  color:"#008080",
+                  color: "#008080",
                   border: "none",
                   borderRadius: "4px",
                   padding: "5px 10px",
@@ -348,42 +315,42 @@ const Dashboard = () => {
                     <button
                       style={{
                         marginTop: "10px",
-                        backgroundColor: "#008080",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        padding: "7px 10px",
-                        cursor: "pointer",
-                        marginRight: "20px",
-                      }}
-                      onClick={() => handleDeleteBlog(selectedUser.id, blog.id)}
-                    >
-                     <FaTrash/> Delete Blog
-                    </button>
-                    <button
-                      style={{
-                        marginTop: "10px",
-                        backgroundColor: "#008080",
-                        color: "white",
-                        border: "none",
+                        backgroundColor: "transparent",
+                        color: "#008080",
+                        border: "1px solid #008080",
                         borderRadius: "4px",
                         padding: "5px 10px",
                         cursor: "pointer",
-                        marginRight: "20px",
+                        marginRight: "10px",
                       }}
                       onClick={() =>
                         handleApproveBlog(selectedUser.id, blog.id, blog.status)
                       }
                     >
-                     < FaCheckCircle/>  Approve
+                      <FaCheckCircle style={{ marginRight: "5px" }} />
+                      Approve
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "transparent",
+                        color: "#ff0000",
+                        border: "1px solid #ff0000",
+                        borderRadius: "4px",
+                        padding: "5px 10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        handleDeleteBlog(selectedUser.id, blog.id)
+                      }
+                    >
+                      <FaTrash style={{ marginRight: "5px" }} />
+                      Delete
                     </button>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p style={{ marginLeft: "7px", marginTop: "20px" }}>
-                No blogs available
-              </p>
+              <p>No blogs available.</p>
             )}
           </div>
         </div>
