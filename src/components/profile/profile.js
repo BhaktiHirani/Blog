@@ -38,7 +38,7 @@ const ProfilePage = () => {
 
         // Set user details (fullName, email, avatar)
         setUserDetails({
-          fullName: userData.fullname || "No Name Provided",
+          fullName: userData.fullName || "No Name Provided",
           email: userData.email || "N/A",
           avatar: userData.avatar || null,
         });
@@ -84,14 +84,7 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
-        <div style={styles.iconContainer}>
-          <button style={styles.iconButton} title="Edit Avatar">
-            <FaEdit style={styles.icon} />
-          </button>
-          <button style={styles.iconButton} title="Delete Avatar">
-            <FaTrash style={{ ...styles.icon, color: '#dc3545' }} />
-          </button>
-        </div>
+
         <div style={styles.userInfo}>
           <p><strong>Full Name:</strong> {userDetails.fullName}</p>
           <p><strong>Email:</strong> {userDetails.email}</p>
@@ -99,6 +92,7 @@ const ProfilePage = () => {
         <button onClick={handleLogout} style={styles.logoutButton}>
           Logout
         </button>
+
       </div>
     </div>
   );
@@ -187,7 +181,7 @@ const styles = {
     width: '100%',
     fontSize: '16px',
     padding: '10px',
-    backgroundColor: '#dc3545',
+    backgroundColor: 'teal',
     color: '#fff',
     border: 'none',
     borderRadius: '5px',
