@@ -70,9 +70,10 @@ const BlogList = () => {
                       <button className="action-button">
                         <FaHeart />
                       </button>
-                      <button className="action-button">
-                        <FaBookmark />
-                      </button>
+                      <button onClick={() => navigate(`/edit/${post.id}`)} className="edit-button">
+                      Edit
+                    </button>
+
                     </div>
                   </div>
                 </div>

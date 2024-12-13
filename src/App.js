@@ -26,6 +26,7 @@ import Dashboard from './components/adminpanel/dashboard';
 import Settings from './components/adminpanel/setting';
 import PendingBlogs from './components/adminpanel/pendingblogs';
 import ManageUsers from './components/adminpanel/manageusers';
+import EditBlog from './components/blogpost/editblog';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -79,6 +80,7 @@ function App() {
         <Route path="/favourite" element={<FavoritesPage />} />
         <Route path="/bookmark" element={<BookmarkPage />} />
         <Route path="/bloglist" element={<BlogList />} />
+        <Route path="/edit/:id" element={<EditBlog /> } />
         <Route path="/myblog" element={<MyBlogUI />} />
         <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/aboutus" element={<AboutUs />} />

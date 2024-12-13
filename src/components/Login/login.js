@@ -121,10 +121,6 @@ const LoginPage = () => {
                 </div>
               </div>
               <div className="reminder d-flex justify-content-between align-items-center">
-                <div className="form-check">
-                  <input type="checkbox" className="form-check-input" id="rememberMe" />
-                  <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
-                </div>
                 <a href="/forgot-password" className="forgot-password-link">Forgot Password?</a>
               </div>
               <button type="submit" className="btn btn-primary btn-block mt-3" disabled={loading}>

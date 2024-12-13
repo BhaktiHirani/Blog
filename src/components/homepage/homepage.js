@@ -11,7 +11,7 @@ import { getAuth } from "firebase/auth";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
   FaSearch,  FaUserCircle, FaSignOutAlt, FaBars, FaFacebookF,
-  FaTwitter, FaInstagram, FaLinkedinIn, FaHeart, FaBookmark, FaHome,
+  FaTwitter, FaInstagram, FaLinkedinIn, FaHeart,  FaHome,
    FaInfoCircle, FaListAlt, 
 } from 'react-icons/fa';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -203,7 +203,6 @@ const HomePage = () => {
           </div>
           <div className="ml-auto d-flex align-items-center">
             <Link className="nav-link" to="/favourite"><FaHeart /></Link>
-            <Link className="nav-link" to="/bookmark"><FaBookmark /></Link>
             <Link className="nav-link" to="/profile"><FaUserCircle /></Link>
           </div>
         </div>

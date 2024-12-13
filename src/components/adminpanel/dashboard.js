@@ -9,8 +9,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase"; // Your Firestore initialization
-import { FaTrash, FaCheckCircle } from "react-icons/fa";
-
+import {
+FaTrash,FaCheckCircle 
+} from 'react-icons/fa';
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -65,32 +66,49 @@ const Dashboard = () => {
   };
 
   // Handle blog deletion
+  // const handleDeleteBlog = async (userId, blogId) => {
+  //   const confirmDelete = window.confirm(
+  //     "Are you sure you want to delete this blog?"
+  //   );
+  //   if (!confirmDelete) return;
+  //   try {
+  //     await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
+  //     setSelectedUser((prevUser) => ({
+  //       ...prevUser,
+  //       blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
+  //     }));
+  //     alert("Blog deleted successfully!");
+  //   } catch (error) {
+  //     console.error("Error deleting blog:", error);
+  //     alert("Failed to delete the blog. Please try again.");
+  //   }
+  // };
   const handleDeleteBlog = async (userId, blogId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this blog?"
     );
     if (!confirmDelete) return;
-
+  
     try {
       // Delete from user's blogPosts collection
       await deleteDoc(doc(db, "users", userId, "blogPosts", blogId));
-
+  
       // Delete from globalPosts collection
       await deleteDoc(doc(db, "globalPosts", blogId));
-
+  
       // Update state to remove the deleted blog
       setSelectedUser((prevUser) => ({
         ...prevUser,
         blogs: prevUser.blogs.filter((blog) => blog.id !== blogId),
       }));
-
+  
       alert("Blog deleted successfully from both collections!");
     } catch (error) {
       console.error("Error deleting blog:", error);
       alert("Failed to delete the blog. Please try again.");
     }
   };
-
+  
   // Handle user deletion
   const handleDeleteUser = async (userId) => {
     const confirmDelete = window.confirm(
@@ -106,8 +124,7 @@ const Dashboard = () => {
       await Promise.all(blogDocs.docs.map((blog) => deleteDoc(blog.ref)));
 
       // Delete the user document
-      await deleteDoc(doc(db, "users", userId));
-
+      await newFunction();
       // Update state to remove the user from the list
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
       setSelectedUser(null);
@@ -116,6 +133,10 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error deleting user:", error);
       alert("Failed to delete the user. Please try again.");
+    }
+
+    async function newFunction() {
+      await deleteDoc(doc(db, "users", userId));
     }
   };
 
