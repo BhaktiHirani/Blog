@@ -27,6 +27,7 @@ import Settings from './components/adminpanel/setting';
 import PendingBlogs from './components/adminpanel/pendingblogs';
 import ManageUsers from './components/adminpanel/manageusers';
 import EditBlog from './components/blogpost/editblog';
+import ForgotPasswordPage from './components/Login/forgetpassword';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -73,6 +74,7 @@ function App() {
         <Route path="/fashion" element={<FashionPage />} />
         <Route path="/world" element={<WorldPage />} />
         <Route path="/business" element={<BusinessPage />} />
+        <Route path="/forgetpassword" element={<ForgotPasswordPage /> } />
         <Route path="/culture" element={<Culture />} />
         <Route path="/tech" element={<TechPage />} />
         <Route path="/health" element={<HealthBlog />} />

@@ -121,7 +121,7 @@ const LoginPage = () => {
                 </div>
               </div>
               <div className="reminder d-flex justify-content-between align-items-center">
-                <a href="/forgot-password" className="forgot-password-link">Forgot Password?</a>
+                <a href="/forgetpassword" className="forgot-password-link">Forgot Password?</a>
               </div>
               <button type="submit" className="btn btn-primary btn-block mt-3" disabled={loading}>
                 {loading ? 'Logging in...' : 'Login'}

@@ -1,0 +1,99 @@
+.forgot-password-page {
+    background: url('https://plus.unsplash.com/premium_photo-1684581214880-2043e5bc8b8b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmxvZyUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .forgot-password-container {
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+  }
+  
+  .forgot-password-form {
+    padding: 20px;
+  }
+  
+  .forgot-password-form h2 {
+    color: #333;
+  }
+  
+  .input-group {
+    width: 100%; /* Dynamically adjust to container */
+    max-width: 390px; /* Set a max width if needed */
+    margin-bottom: 15px;
+  }
+  
+  .form-control {
+    width: 100%; /* Match the parent width */
+  }
+  
+  .input-group-text {
+    color: #333;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+  
+  .input-group-text i {
+    font-size: 1.5rem;
+  }
+  
+  .form-control {
+    height: 2.5rem;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+  }
+  
+  .btn-primary {
+    background-color: #0c7683;
+    border: none;
+    width: 100%;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0c7683;
+  }
+  
+  .forgot-password-link {
+    color: #0c7683;
+    text-decoration: none;
+  }
+  
+  .forgot-password-link:hover {
+    text-decoration: underline;
+  }
+  
+  .signup-link {
+    color: #0c7683;
+    text-decoration: none;
+  }
+  
+  .signup-link:hover {
+    text-decoration: underline;
+  }
+  
+  .illustration img {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .forgot-password-container {
+      padding: 20px;
+    }
+  
+    .forgot-password-form {
+      margin-top: 20px;
+    }
+  }
+  
